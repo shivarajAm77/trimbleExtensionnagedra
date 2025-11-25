@@ -1,2 +1,1 @@
-# trimbleExtension
-trimble extension
+# trimble-extension
