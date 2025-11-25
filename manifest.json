@@ -1,14 +1,11 @@
 {
-  "id": "virtuele-redirect-extension",
-  "title": "Virtuele Redirect Extension",
-  "description": "Extension to redirect users to virtule Development",
-  "type":"project",
-  "version": "1.0.0",
+  "id": "virtuele-app-extension",
+  "title": "Virtuele app Extension",
+  "description": "Extension to redirect users to virtuele Development",
+  "type": "project",
+  "version": "1.0.1",
   "icon": "https://shivarajam77.github.io/trimble-extension/V.png",
-  "url": "https://nagendrachikkanna.github.io/trimbleExtension/index.html",
+  "entryPoint": "https://nagendrachikkanna.github.io/trimbleExtension/index.html",
+  "permissions": ["projects", "ui"],
   "enabled": true
 }
-
-
-
-
