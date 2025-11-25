@@ -45,7 +45,7 @@ async function initializeTrimbleConnect(){
             },
         ],
     };
-
+    console.log(mainMenuObject);
     // Updating the menu object.
     workSpaceAPI.ui.setMenu(mainMenuObject);
     // Updating the active submenu.
