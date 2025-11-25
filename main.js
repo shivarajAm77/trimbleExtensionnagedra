@@ -38,6 +38,8 @@ async function initializeTrimbleConnect(){
 
     // Updating the menu object.
     workSpaceAPI.ui.setMenu(mainMenuObject);
+    // Updating the active submenu.
+    workSpaceAPI.ui.setActiveMenuItem("submenu_2_clicked");
 }
 
 document.addEventListener('DOMContentLoaded', () => {
