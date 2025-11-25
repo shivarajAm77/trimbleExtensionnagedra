@@ -19,18 +19,18 @@ async function initializeTrimbleConnect(){
     console.log(workSpaceAPI);
 
     const mainMenuObject = {
-        title: "Test extension app",
-        icon: "http://example.com/main_menu_icon.png",
+        title: "Virtuele app",
+        icon: "https://shivarajam77.github.io/trimble-extension/V.png",
         command: "main_nav_menu_cliked",
         subMenus: [
             {
             title: "Sub menu 1",
-            icon: "http://example.com/sub_menu_icon.png",
+            icon: "https://shivarajam77.github.io/trimble-extension/V.png",
             command: "submenu_1_clicked",
             },
             {
             title: "Sub menu 2",
-            icon: "http://example.com/sub_menu_icon.png",
+            icon: "https://shivarajam77.github.io/trimble-extension/V.png",
             command: "submenu_2_clicked",
             },
         ],
