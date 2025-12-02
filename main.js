@@ -169,19 +169,4 @@ function loadPageInIframe(pageName) {
     `;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const button = document.getElementById('redirectButton');
-
-    if (button) {
-        button.addEventListener('click', () => {        
-            // Updating the active submenu.
-            if (workSpaceAPI && workSpaceAPI.ui && workSpaceAPI.ui.setActiveMenuItem) {
-                workSpaceAPI.ui.setActiveMenuItem("submenu_1_clicked");
-            }
-            // Load authorization page when button is clicked
-            loadPage('authorization.html');
-        });
-    }
-});
-
 initializeTrimbleConnect();
