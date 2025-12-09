@@ -13,13 +13,15 @@
     </div>
 <script src="https://<KEYCLOAK_DOMAIN>/realms/<REALM_NAME>/protocol/openid-connect/js/keycloak.js"></script>
     <script src="main.js"></script>
-    <script>
+    <button id="loginBtn">Login with Keycloak</button>
+<div id="authStatus"></div>
+    <!script>
         document.getElementById('redirectButton').addEventListener('click', function() {
             debugger;
             //window.location.href = 'Authorization.html';
             window.open('https://dev.virtuele.us', '_blank');
         });
-    </script>
+    <!/script>
 </body>
 </html>
 
