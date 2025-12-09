@@ -1,5 +1,7 @@
 let workSpaceAPI = null;
 
+<script src="https://<KEYCLOAK_DOMAIN>/realms/<REALM_NAME>/protocol/openid-connect/js/keycloak.js"></script>
+
 async function initializeTrimbleConnect(){
     workSpaceAPI = await TrimbleConnectWorkspace.connect(window.parent,
         (event, args) => {
