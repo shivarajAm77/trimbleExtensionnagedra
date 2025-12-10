@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log("🔹 Project:", await workSpaceAPI.project.getCurrentProject());
   console.log("🔹 User:", await workSpaceAPI.user.getUser());
   console.log("🔹 Host:", await workSpaceAPI.extension.getHost());
-  console.log("=== Workspace.extension METHODS ===");
+  console.log("🔹 appInfo:", await workSpaceAPI.appInfo());
 
 }
 
