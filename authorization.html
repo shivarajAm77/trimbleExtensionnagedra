@@ -8,18 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/keycloak-js@26.2.1/lib/keycloak.min.js"></script>
 </head>
 <body>
-        <div class="container">
-        <h1>Virtuele Connect</h1>
-        <button id="redirectButton">Authorize</button>
-    </div>
-    <script src="main.js"></script>
-    <script>
-        document.getElementById('redirectButton').addEventListener('click', function() {
-            debugger;
-            //window.location.href = 'Authorization.html';
-            window.open('https://dev.virtuele.us', '_blank');
-        });
-    </script>
+       <button id="loginBtn">Login with Keycloak</button>
+  <div id="authStatus"></div>
+
+  <!-- Your app JS LAST -->
+  <script src="main.js"></script>
 </body>
 </html>
 
