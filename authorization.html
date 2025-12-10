@@ -7,9 +7,18 @@
     <script src="https://components.connect.trimble.com/trimble-connect-workspace-api/index.js"></script>
 </head>
 <body>
-    <button id="loginBtn">Login with Keycloak</button>
-    <div id="authStatus"></div>
+        <div class="container">
+        <h1>Virtuele Connect</h1>
+        <button id="redirectButton">Authorize</button>
+    </div>
     <script src="main.js"></script>
+    <script>
+        document.getElementById('redirectButton').addEventListener('click', function() {
+            debugger;
+            //window.location.href = 'Authorization.html';
+            window.open('https://dev.virtuele.us', '_blank');
+        });
+    </script>
 </body>
 </html>
 
