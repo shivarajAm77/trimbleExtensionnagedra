@@ -86,17 +86,6 @@ async function initializeTrimbleConnect(){
 // Function to load different pages
 function loadPage(pageName) {
     console.log(`Loading page: ${pageName}`);
-    console.log("✅ Workspace API connected", workSpaceAPI);
-
-    // ✅ GET HOST PAGE INFO
-    const context = await workSpaceAPI.getContext();
-    console.log("✅ Context:", context);
-
-    // ✅ MAIN PAGE URL (Trimble)
-    console.log("✅ Parent URL:", context.host?.url);
-
-    // ✅ Project page URL
-    console.log("✅ Project URL:", context.project?.url);
     
     // Option 1: Load content dynamically via fetch
     // fetch(pageName)
