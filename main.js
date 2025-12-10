@@ -1,9 +1,5 @@
 let workSpaceAPI = null;
 
-window.addEventListener("load", async () => {
-  await initKeycloak();
-  initializeTrimble();
-});
 
 async function initializeTrimbleConnect(){
     workSpaceAPI = await TrimbleConnectWorkspace.connect(window.parent,
@@ -174,4 +170,8 @@ function loadPageInIframe(pageName) {
     `;
 }
 
-initializeTrimbleConnect();
+window.addEventListener("load", async () => {
+  await initKeycloak();
+  await initializeTrimbleConnect();
+});
+
