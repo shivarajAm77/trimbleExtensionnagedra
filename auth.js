@@ -1,3 +1,7 @@
+ if (!window.Keycloak) {
+    console.error("❌ Keycloak adapter not loaded");
+    return;
+  }
 const keycloak = new Keycloak({
   url: "https://securedev.virtuele.us",
   realm: "virtuele-dev",
