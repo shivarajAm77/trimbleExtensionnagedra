@@ -1,7 +1,7 @@
 const keycloak = new Keycloak({
-  url: "https://auth.mycompany.com",
-  realm: "virtuele",
-  clientId: "virtuele-trimble-extension"
+  url: "https://securedev.virtuele.us",
+  realm: "virtuele-dev",
+  clientId: "web"
 });
 
 function loginWithKeycloak() {
