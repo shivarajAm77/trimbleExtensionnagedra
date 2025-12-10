@@ -1,8 +1,9 @@
 let workSpaceAPI = null;
-<script src="https://cdn.jsdelivr.net/npm/keycloak-js@26.2.1/lib/keycloak.min.js
-"></script>
 
-
+window.addEventListener("load", async () => {
+  await initKeycloak();
+  initializeTrimble();
+});
 
 async function initializeTrimbleConnect(){
     workSpaceAPI = await TrimbleConnectWorkspace.connect(window.parent,
