@@ -16,11 +16,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function getTrimbleHostUrl() {
     if (!workSpaceAPI) return null;
-    Object.entries(workSpaceAPI).forEach(([key, value]) => {
-  console.log(`Workspace.${key}:`, value);
-});
+  
     return document.referrer || window.location.origin;
   }
+
+  async function logWorkspaceValues() {
+  console.log("🔹 Project:", await workSpaceAPI.project.getCurrentProject());
+  console.log("🔹 User:", await workSpaceAPI.user.getUser());
+  console.log("🔹 Host:", await workSpaceAPI.extension.getHost());
+  console.log("🔹 View:", await workSpaceAPI.view.getCurrentView());
+}
+
+await logWorkspaceValues();
+
 
   // ---------------- Keycloak Init ----------------
   console.log("Keycloak typeof:", typeof Keycloak);
