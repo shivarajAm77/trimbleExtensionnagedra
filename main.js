@@ -37,8 +37,18 @@ async function initializeTrimbleConnect(){
         },
         3000 // connection timeout in milliseconds.
         );
-    console.log(workSpaceAPI);
+    console.log("✅ Workspace API connected", workSpaceAPI);
 
+      // ✅ GET HOST PAGE INFO
+      const context = await workSpaceAPI.getContext();
+      console.log("✅ Context:", context);
+
+      // ✅ MAIN PAGE URL (Trimble)
+      console.log("✅ Parent URL:", context.host?.url);
+
+      // ✅ Project page URL
+      console.log("✅ Project URL:", context.project?.url);
+    
     const mainMenuObject = {
         title: "Virtuele app",
         icon: "https://shivarajam77.github.io/trimble-extension/V.png",
