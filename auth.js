@@ -13,7 +13,7 @@ function loginWithKeycloak() {
     redirectUri: window.location.origin + window.location.pathname
   });
 }
-
+debugger;
 function initKeycloak() {
   return keycloak.init({
     onLoad: "check-sso",
