@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await window.keycloak.init({
     onLoad: "check-sso",
     pkceMethod: "S256",
-    silentCheckSsoRedirectUri: window.location.origin + "trimbleExtensionnagedra/silent-check-sso.html"
+    silentCheckSsoRedirectUri: window.location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
   }).then(authenticated => {
     if (authenticated) {
       console.log("User authenticated", window.keycloak.tokenParsed);
