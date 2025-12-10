@@ -15,12 +15,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   await initTrimble();
 
   async function getTrimbleHostUrl() {
+    const parentOrigin = document.referrer;
+    console.log("Trimble host URL:", parentOrigin);
     if (!workSpaceAPI) return null;
-
-    const context = await workSpaceAPI.extension.getContext();
-    console.log("Trimble context:", context);
-
-    return context?.hostUrl || null;
+    return document.referrer || window.location.origin;
   }
 
   // ---------------- Keycloak Init ----------------
@@ -63,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("✅ Trimble host URL:", trimbleUrl);
 
       const loginUrl = window.keycloak.createLoginUrl({
-        redirectUri: trimbleUrl || window.location.origin
+      redirectUri: trimbleUrl
       });
 
       window.open(loginUrl, "_blank", "noopener,noreferrer");
