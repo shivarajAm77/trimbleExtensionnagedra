@@ -1,5 +1,24 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  
+
+  let workSpaceAPI;
+
+async function initTrimble() {
+  workSpaceAPI = await TrimbleConnectWorkspace.connect(
+    window.parent,
+    () => {},
+    3000
+  );
+  async function getTrimbleHostUrl() {
+  if (!workSpaceAPI) return null;
+
+  const context = await workSpaceAPI.extension.getContext();
+  console.log("Trimble context:", context);
+
+  return context?.hostUrl || null;
+}
+
+  console.log("Trimble API connected", workSpaceAPI);
+}
   console.log("Keycloak typeof:", typeof Keycloak);
 
   if (typeof Keycloak !== "function") {
@@ -50,6 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (loginBtn) {
     loginBtn.addEventListener("click", () => {
       console.log("Login button clicked");
+      console.log(getTrimbleHostUrl())
       // Open Keycloak login in a NEW TAB
       const loginUrl = window.keycloak.createLoginUrl({
         redirectUri: window.location.href
