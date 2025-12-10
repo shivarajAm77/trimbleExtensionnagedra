@@ -10,9 +10,15 @@
 <body>
 
        <button id="loginBtn">Login with Keycloak</button>
+     <button id="reloadBtn">Reload Page</button>
   <div id="authStatus"></div>
      <script src="auth-redirect.js"></script>
  <script src="auth.js"></script>
+      <script>
+      document.getElementById("reloadBtn").addEventListener("click", () => {
+        window.location.reload();
+      });
+    </script>
 </body>
 </html>
 
