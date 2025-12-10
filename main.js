@@ -173,6 +173,5 @@ function loadPageInIframe(pageName) {
         </iframe>
     `;
 }
-<script src="https://cdn.jsdelivr.net/npm/keycloak-js@26.2.1/lib/keycloak.min.js"></script>
 
 initializeTrimbleConnect();
