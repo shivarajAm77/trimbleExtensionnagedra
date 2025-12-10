@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  
+  console.log("Keycloak typeof:", typeof Keycloak);
+
+  if (typeof Keycloak !== "function") {
+    console.error("❌ Keycloak adapter not loaded");
+    return;
+  }
   // Create Keycloak instance
   window.keycloak = new Keycloak({
     url: "https://securedev.virtuele.us",
