@@ -169,9 +169,8 @@ function loadPageInIframe(pageName) {
         </iframe>
     `;
 }
-
+initializeTrimbleConnect()
 window.addEventListener("load", async () => {
   await initKeycloak();
-  await initializeTrimbleConnect();
 });
 
