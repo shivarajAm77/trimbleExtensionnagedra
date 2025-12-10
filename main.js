@@ -1,10 +1,7 @@
 let workSpaceAPI = null;
 
 
-window.addEventListener("load", async () => {
-  await initKeycloak();
-  initializeTrimble();
-});
+
 async function initializeTrimbleConnect(){
     workSpaceAPI = await TrimbleConnectWorkspace.connect(window.parent,
         (event, args) => {
@@ -173,5 +170,4 @@ function loadPageInIframe(pageName) {
         </iframe>
     `;
 }
-<script src="https://<KEYCLOAK_DOMAIN>/realms/<REALM_NAME>/protocol/openid-connect/js/keycloak.js"></script>
 initializeTrimbleConnect();
