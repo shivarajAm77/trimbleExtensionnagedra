@@ -19,13 +19,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     pkceMethod: "S256",
     silentCheckSsoRedirectUri: window.location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
   }).then(authenticated => {
-    if (authenticated) {
-      console.log("User authenticated", window.keycloak.tokenParsed);
-      document.getElementById("authStatus").innerHTML = `
-        ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
-      `;
+  if (!authenticated) return;
+
+  const authData = {
+    authenticated: true,
+    accessToken: window.keycloak.token,
+    expiresAt: Date.now() + window.keycloak.tokenParsed.exp * 1000,
+    user: {
+      username: window.keycloak.tokenParsed.preferred_username,
+      email: window.keycloak.tokenParsed.email,
+      name: window.keycloak.tokenParsed.name
     }
-  }).catch(err => console.error("Keycloak init error:", err));
+  };
+
+  // ✅ SET GLOBAL OBJECT
+  window.globalAuth = authData;
+
+  // ✅ PERSIST FOR OTHER TABS / PAGES
+  localStorage.setItem("globalAuth", JSON.stringify(authData));
+
+  console.log("✅ GlobalAuth set:", window.globalAuth);
+
+  document.getElementById("authStatus").innerHTML = `
+    ✅ Logged in as: ${authData.user.username}
+  `;
+}).catch(err => console.error("Keycloak init error:", err));
 
   // Attach login button
   const loginBtn = document.getElementById("loginBtn");
