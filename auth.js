@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("auth.js loaded");
-
   // Create Keycloak instance
   window.keycloak = new Keycloak({
     url: "https://securedev.virtuele.us",
@@ -8,12 +6,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     clientId: "web"
   });
 
-  console.log("Keycloak object created:", window.keycloak);
-
-  // Initialize Keycloak
+  // Initialize Keycloak (PKCE)
   await window.keycloak.init({
     onLoad: "check-sso",
-    pkceMethod: "S256", // PKCE enabled
+    pkceMethod: "S256",
     silentCheckSsoRedirectUri: window.location.origin + "/silent-check-sso.html"
   }).then(authenticated => {
     if (authenticated) {
@@ -21,8 +17,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("authStatus").innerHTML = `
         ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
       `;
-    } else {
-      console.log("User not authenticated yet");
     }
   }).catch(err => console.error("Keycloak init error:", err));
 
@@ -31,10 +25,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (loginBtn) {
     loginBtn.addEventListener("click", () => {
       console.log("Login button clicked");
-      // Keycloak handles PKCE automatically
-      window.keycloak.login({
+      // Open Keycloak login in a NEW TAB
+      const loginUrl = window.keycloak.createLoginUrl({
         redirectUri: window.location.href
       });
+      window.open(loginUrl, "_blank", "noopener,noreferrer");
     });
   } else {
     console.error("loginBtn not found in DOM");
