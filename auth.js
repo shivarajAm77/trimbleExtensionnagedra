@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   Object.getOwnPropertyNames(workSpaceAPI.extension)
     .filter(key => typeof workSpaceAPI.extension[key] === "function")
     .forEach(fn => {
-    console.log("extension." + fn);
+    console.log("extension." + fn());
   });
 }
 
