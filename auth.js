@@ -26,11 +26,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log("🔹 Host:", await workSpaceAPI.extension.getHost());
   console.log("=== Workspace.extension METHODS ===");
 
-  Object.getOwnPropertyNames(workSpaceAPI.extension)
-    .filter(key => typeof workSpaceAPI.extension[key] === "function")
-    .forEach(fn => {
-    console.log("extension." + fn());
-  });
 }
 
 await logWorkspaceValues();
