@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function getTrimbleHostUrl() {
     const parentOrigin = window.parent.location.href;
-    console.log("Trimble host URL:", parentOrigin);
+    console.log("parentOrigin host URL:", parentOrigin);
     if (!workSpaceAPI) return null;
     return document.referrer || window.location.origin;
   }
