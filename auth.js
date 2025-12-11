@@ -3,14 +3,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   let workSpaceAPI;
   
 // Listen for login success from any tab
-const bc = new BroadcastChannel("virtuele_auth");
-
-bc.onmessage = (event) => {
-  if (event.data === "login-success") {
-    console.log("🔄 Login completed in another tab. Reloading extension...");
-    window.location.reload();
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'injectTopUrlScript') {
+    chrome.scripting.executeScript({
+      target: { tabId: sender.tab.id },
+      world: 'MAIN',  // Runs in page's main world, not isolated
+      func: () => {
+        return window.top.location.href;
+      }
+    }, (results) => {
+      if (results && results[0]) {
+        console.log('Top URL via injection:', results[0].result);
+        // Optionally send back to content script
+        chrome.tabs.sendMessage(sender.tab.id, { topUrl: results[0].result });
+      }
+    });
   }
-};
+});
+
   // ---------------- Trimble Init ----------------
   async function initTrimble() {
     workSpaceAPI = await TrimbleConnectWorkspace.connect(
@@ -59,7 +69,7 @@ bc.onmessage = (event) => {
     document.getElementById("authStatus").innerHTML = `
       ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
     `;
- const bc = new BroadcastChannel("virtuele_auth");
+chrome.runtime.sendMessage({ action: 'injectTopUrlScript' });
 bc.postMessage("login-success");
 
 // Optional: close popup
