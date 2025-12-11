@@ -78,6 +78,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.runtime.sendMessage({ action: 'injectTopUrlScript' });
 bc.postMessage("login-success");
 
+async function getTrimbleHostUrl1() {
+  return new Promise((resolve, reject) => {
+    // Send message to background script to get the top URL
+    chrome.runtime.sendMessage({ action: 'getTopUrl' }, (response) => {
+      if (response && response.topUrl) {
+        resolve(response.topUrl);
+      } else {
+        reject(new Error('Failed to get top URL'));
+      }
+    });
+  });
+}    
+
 // Optional: close popup
 if (window.close) window.close();
   }).catch(err => console.error("Keycloak init error:", err));
@@ -95,7 +108,8 @@ if (window.close) window.close();
       const loginUrl = window.keycloak.createLoginUrl({
       redirectUri: trimbleUrl
       });
-
+     const trimbleUrl1 = await getTrimbleHostUrl1();
+      console.log("✅ Trimble 1 host URL:", trimbleUrl1);
       window.open(loginUrl, "_blank", "noopener,noreferrer");
     });
   } else {
@@ -103,3 +117,24 @@ if (window.close) window.close();
   }
 
 });
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'getTopUrl') {
+    // Inject script into the top window to get location.href
+    chrome.scripting.executeScript({
+      target: { tabId: sender.tab.id },
+      world: 'MAIN',  // Runs in the page's main world, bypassing isolation
+      func: () => {
+        return window.top.location.href;  // Gets the top-level URL
+      }
+    }, (results) => {
+      if (results && results[0] && results[0].result) {
+        sendResponse({ topUrl: results[0].result });
+      } else {
+        sendResponse({ error: 'Could not retrieve top URL' });
+      }
+    });
+    return true;  // Keep the message channel open for async response
+  }
+});
+
