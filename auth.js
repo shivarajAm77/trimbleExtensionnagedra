@@ -2,9 +2,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let workSpaceAPI;
   
-  window.addEventListener("storage", (event) => {
-  if (event.key === "virtuele_reload") {
-    console.log("🔄 Reload triggered from another tab");
+ window.addEventListener("message", (event) => {
+  if (event.data?.login === "success") {
+    console.log("🔄 Login completed, reload triggered");
     window.location.reload();
   }
 });
@@ -57,7 +57,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("authStatus").innerHTML = `
       ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
     `;
-    localStorage.setItem("virtuele_reload", Date.now().toString());
+    window.opener.postMessage({ login: "success" }, "*");
+    window.close();
   }).catch(err => console.error("Keycloak init error:", err));
 
   // ---------------- Login Button ----------------
