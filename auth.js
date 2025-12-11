@@ -16,10 +16,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function getTrimbleHostUrl() {
     if (!workSpaceAPI) return null;
-  
+    console.log("Document",document);
     return document.referrer || window.location.origin;
   }
-
+  
   async function logWorkspaceValues() {
   console.log("🔹 Project:", await workSpaceAPI.project.getCurrentProject());
   console.log("🔹 User:", await workSpaceAPI.user.getUser());
