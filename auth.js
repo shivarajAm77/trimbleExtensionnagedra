@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function getTrimbleHostUrl() {
     if (!workSpaceAPI) return null;
     console.log("Document",document);
-    return document.referrer || window.location.origin;
+    return window.location.href || window.location.origin;
   }
  
 
