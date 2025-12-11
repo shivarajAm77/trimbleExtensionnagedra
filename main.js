@@ -180,7 +180,4 @@ function loadPageInIframe(pageName) {
     `;
 }
 initializeTrimbleConnect()
-window.addEventListener("load", async () => {
-  await initKeycloak();
-});
 
