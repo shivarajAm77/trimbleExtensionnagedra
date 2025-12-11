@@ -19,7 +19,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Document",document);
     return document.referrer || window.location.origin;
   }
-  
+  async function getExtensionUUID(workSpaceAPI) {
+    try {
+        const info = await workSpaceAPI.extension.getSelf();
+        console.log("Extension Info:", info);
+        return info?.id || null;
+    } catch (e) {
+        console.error("Error getting extension UUID:", e);
+        return null;
+    }
+}
   async function logWorkspaceValues() {
   console.log("🔹 Project:", await workSpaceAPI.project.getCurrentProject());
   console.log("🔹 User:", await workSpaceAPI.user.getUser());
