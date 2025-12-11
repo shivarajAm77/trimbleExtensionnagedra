@@ -2,7 +2,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let workSpaceAPI;
   
-// Listen for login success from any tab
+   if (typeof chrome !== 'undefined' && chrome.runtime) {
+       chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'injectTopUrlScript') {
     chrome.scripting.executeScript({
@@ -16,10 +17,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         console.log('Top URL via injection:', results[0].result);
         // Optionally send back to content script
         chrome.tabs.sendMessage(sender.tab.id, { topUrl: results[0].result });
+          }
+        });
       }
-    });
-  }
-});
+    })
+       });
+     } else {
+       console.error('Chrome extension APIs not available in Brave. Check extension loading or Shields.');
+     }
+     
 
   // ---------------- Trimble Init ----------------
   async function initTrimble() {
