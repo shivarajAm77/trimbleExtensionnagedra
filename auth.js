@@ -1,32 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
   let workSpaceAPI;
-  
-   if (typeof chrome !== 'undefined' && chrome.runtime) {
-       chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'injectTopUrlScript') {
-    chrome.scripting.executeScript({
-      target: { tabId: sender.tab.id },
-      world: 'MAIN',  // Runs in page's main world, not isolated
-      func: () => {
-        return window.top.location.href;
-      }
-    }, (results) => {
-      if (results && results[0]) {
-        console.log('Top URL via injection:', results[0].result);
-        // Optionally send back to content script
-        chrome.tabs.sendMessage(sender.tab.id, { topUrl: results[0].result });
-          }
-        });
-      }
-    })
-       });
-     } else {
-       console.error('Chrome extension APIs not available in Brave. Check extension loading or Shields.');
-     }
-     
-
   // ---------------- Trimble Init ----------------
   async function initTrimble() {
     workSpaceAPI = await TrimbleConnectWorkspace.connect(
@@ -78,18 +52,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.runtime.sendMessage({ action: 'injectTopUrlScript' });
 bc.postMessage("login-success");
 
-async function getTrimbleHostUrl1() {
-  return new Promise((resolve, reject) => {
-    // Send message to background script to get the top URL
-    chrome.runtime.sendMessage({ action: 'getTopUrl' }, (response) => {
-      if (response && response.topUrl) {
-        resolve(response.topUrl);
-      } else {
-        reject(new Error('Failed to get top URL'));
-      }
-    });
-  });
-}    
+
 
 // Optional: close popup
 if (window.close) window.close();
@@ -108,8 +71,7 @@ if (window.close) window.close();
       const loginUrl = window.keycloak.createLoginUrl({
       redirectUri: trimbleUrl
       });
-     const trimbleUrl1 = await getTrimbleHostUrl1();
-      console.log("✅ Trimble 1 host URL:", trimbleUrl1);
+    
       window.open(loginUrl, "_blank", "noopener,noreferrer");
     });
   } else {
