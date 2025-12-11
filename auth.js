@@ -1,6 +1,13 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
   let workSpaceAPI;
+  
+  window.addEventListener("storage", (event) => {
+  if (event.key === "virtuele_reload") {
+    console.log("🔄 Reload triggered from another tab");
+    window.location.reload();
+  }
+});
 
   // ---------------- Trimble Init ----------------
   async function initTrimble() {
@@ -50,6 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("authStatus").innerHTML = `
       ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
     `;
+    localStorage.setItem("virtuele_reload", Date.now().toString());
   }).catch(err => console.error("Keycloak init error:", err));
 
   // ---------------- Login Button ----------------
