@@ -2,13 +2,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let workSpaceAPI;
   
- window.addEventListener("message", (event) => {
-  if (event.data?.login === "success") {
-    console.log("🔄 Login completed, reload triggered");
+// Listen for login success from any tab
+const bc = new BroadcastChannel("virtuele_auth");
+
+bc.onmessage = (event) => {
+  if (event.data === "login-success") {
+    console.log("🔄 Login completed in another tab. Reloading extension...");
     window.location.reload();
   }
-});
-
+};
   // ---------------- Trimble Init ----------------
   async function initTrimble() {
     workSpaceAPI = await TrimbleConnectWorkspace.connect(
@@ -57,8 +59,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("authStatus").innerHTML = `
       ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
     `;
-    window.opener.postMessage({ login: "success" }, "*");
-    window.close();
+ const bc = new BroadcastChannel("virtuele_auth");
+bc.postMessage("login-success");
+
+// Optional: close popup
+if (window.close) window.close();
   }).catch(err => console.error("Keycloak init error:", err));
 
   // ---------------- Login Button ----------------
