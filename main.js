@@ -179,5 +179,5 @@ function loadPageInIframe(pageName) {
         </iframe>
     `;
 }
-initializeTrimbleConnect()
+initializeTrimbleConnect();
 
