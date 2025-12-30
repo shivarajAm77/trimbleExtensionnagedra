@@ -84,9 +84,6 @@ if (window.close) window.close();
 
 });
 
-// Reload always visible
-document.getElementById("reloadBtn").onclick = () => location.reload();
-
 // Called ONLY when authenticated === true
 function onLoginSuccess(tokenParsed) {
   document.getElementById("loginBtn").hidden = true;
