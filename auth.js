@@ -46,11 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     onNotAuthenticated();
     return;
   }
-    console.log("✅ User authenticated", window.keycloak.tokenParsed);
-    document.getElementById("authStatus").innerHTML = `
-      ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
-    `;
-     onLoginSuccess(window.keycloak.tokenParsed);
+    onLoginSuccess(window.keycloak.tokenParsed);
     document.getElementById("logoutBtn").style.display = "inline-block";
     
  if (window.self === window.top) {
@@ -99,5 +95,13 @@ function onNotAuthenticated() {
   document.getElementById("loginBtn").hidden = false;
   document.getElementById("userActions").hidden = true;
 }
-
+function logout() {
+    if (!window.keycloak) {
+        console.error("Keycloak not initialized");
+        return;
+    }
+    window.keycloak.logout({
+        redirectUri: window.location.origin
+    });
+}
 
