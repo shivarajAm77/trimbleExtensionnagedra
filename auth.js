@@ -49,6 +49,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("authStatus").innerHTML = `
       ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
     `;
+    
+    document.getElementById("logoutBtn").style.display = "inline-block";
+    
  if (window.self === window.top) {
       console.log("Closing standalone tab");
       window.close();
@@ -81,3 +84,8 @@ if (window.close) window.close();
 
 });
 
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  window.keycloak.logout({
+    redirectUri: window.location.origin + "/trimbleExtensionnagedra/"
+  });
+});
