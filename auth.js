@@ -49,12 +49,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("authStatus").innerHTML = `
       ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
     `;
-
-bc.postMessage("login-success");
  if (window.self === window.top) {
-      console.log("🚪 Closing standalone tab");
+      console.log("Closing standalone tab");
       window.close();
     }
+bc.postMessage("login-success");
+
 // Optional: close popup
 if (window.close) window.close();
   }).catch(err => console.error("Keycloak init error:", err));
