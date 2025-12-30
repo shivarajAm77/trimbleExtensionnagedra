@@ -9,11 +9,22 @@
 </head>
 <body>
 
-       <button id="loginBtn">Login with Keycloak</button>
-     <button id="reloadBtn">Reload Page</button>
-    <button id="logoutBtn" style="display:none;">
-      🚪 Logout
-    </button>
+   <div class="top-bar">
+  <div class="left-actions">
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <div class="right-actions" id="userActions" hidden>
+    <div class="user-info">
+      ✅ <span id="username"></span>
+    </div>
+
+    <div class="action-buttons">
+      <button id="reloadBtn">🔄 Reload</button>
+      <button id="logoutBtn" class="danger">🚪 Logout</button>
+    </div>
+  </div>
+</div>
   <div id="authStatus"></div>
      <script src="auth-redirect.js"></script>
  <script src="auth.js"></script>
