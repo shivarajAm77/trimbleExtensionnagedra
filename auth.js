@@ -42,9 +42,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     silentCheckSsoRedirectUri:
       window.location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
   }).then(authenticated => {
-    if (!authenticated) 
+     if (!authenticated) {
     onNotAuthenticated();
-      return;
+    return;
+  }
     console.log("✅ User authenticated", window.keycloak.tokenParsed);
     document.getElementById("authStatus").innerHTML = `
       ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
