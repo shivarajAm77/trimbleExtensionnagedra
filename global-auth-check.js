@@ -16,6 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("User:", auth.user.username);
     console.log("Token expires at:", new Date(auth.expiresAt));
 
+    if (window.self === window.top) {
+      console.log("🚪 Closing standalone tab");
+      window.close();
+    }
   } catch (e) {
     console.error("❌ Invalid globalAuth data");
     localStorage.removeItem("globalAuth");
