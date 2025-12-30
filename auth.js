@@ -51,9 +51,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     `;
 
 bc.postMessage("login-success");
-
-
-
+ if (window.self === window.top) {
+      console.log("🚪 Closing standalone tab");
+      window.close();
+    }
 // Optional: close popup
 if (window.close) window.close();
   }).catch(err => console.error("Keycloak init error:", err));
