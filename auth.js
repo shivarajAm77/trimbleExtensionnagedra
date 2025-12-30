@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("authStatus").innerHTML = `
       ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
     `;
-    
+     onLoginSuccess(window.keycloak.tokenParsed);
     document.getElementById("logoutBtn").style.display = "inline-block";
     
  if (window.self === window.top) {
@@ -84,8 +84,19 @@ if (window.close) window.close();
 
 });
 
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  window.keycloak.logout({
+
+
+function onLoginSuccess(tokenParsed) {
+  document.getElementById("loginBtn").style.display = "none";
+  document.getElementById("userActions").style.display = "flex";
+  document.getElementById("username").innerText =
+    tokenParsed.preferred_username;
+}
+
+document.getElementById("reloadBtn").onclick = () => location.reload();
+
+document.getElementById("logoutBtn").onclick = () => {
+  keycloak.logout({
     redirectUri: window.location.origin + "/trimbleExtensionnagedra/"
   });
-});
+};
