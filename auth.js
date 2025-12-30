@@ -42,10 +42,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     silentCheckSsoRedirectUri:
       window.location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
   }).then(authenticated => {
-    if (!authenticated) return;
-
+    if (!authenticated) 
+    onNotAuthenticated();
+      return;
     console.log("✅ User authenticated", window.keycloak.tokenParsed);
-
     document.getElementById("authStatus").innerHTML = `
       ✅ Logged in as: ${window.keycloak.tokenParsed.preferred_username}
     `;
@@ -84,19 +84,22 @@ if (window.close) window.close();
 
 });
 
+// Reload always visible
+document.getElementById("reloadBtn").onclick = () => location.reload();
 
-
+// Called ONLY when authenticated === true
 function onLoginSuccess(tokenParsed) {
-  document.getElementById("loginBtn").style.display = "none";
-  document.getElementById("userActions").style.display = "flex";
+  document.getElementById("loginBtn").hidden = true;
+  document.getElementById("userActions").hidden = false;
+
   document.getElementById("username").innerText =
     tokenParsed.preferred_username;
 }
 
-document.getElementById("reloadBtn").onclick = () => location.reload();
+// Optional: when not authenticated
+function onNotAuthenticated() {
+  document.getElementById("loginBtn").hidden = false;
+  document.getElementById("userActions").hidden = true;
+}
 
-document.getElementById("logoutBtn").onclick = () => {
-  keycloak.logout({
-    redirectUri: window.location.origin + "/trimbleExtensionnagedra/"
-  });
-};
+
