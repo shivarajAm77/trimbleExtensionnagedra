@@ -8,6 +8,9 @@
     clientId: "web"
   });
 
+  // OPTIONAL: expose globally
+  window.keycloak = keycloak;
+
   (async () => {
     const authenticated = await keycloak.init({
       onLoad: "check-sso",
@@ -20,7 +23,6 @@
       bc.postMessage("login-success");
     }
 
-    // Close redirect tab safely
     if (window.self === window.top) {
       window.close();
     }
