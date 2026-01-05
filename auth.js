@@ -24,13 +24,15 @@ function toAuthCheckUrl(url) {
     ? url.replace("/authorization.html", "/authcheck.html")
     : url;
 }
-  window.bm = new BroadcastChannel("kc-message");
+window.addEventListener("message", (event) => {
+  if (event.data?.type === "KC_LOGIN_SUCCESS") {
+    console.log("✅ Login received via postMessage");
 
-bm.onmessage = (e) => {
-  console.log("📩 iframe received:", e.data);
-};
-
-console.log("iframe listening");
+    keycloak.init({ onLoad: "check-sso" }).then(auth => {
+      if (auth) onLoginSuccess(keycloak.tokenParsed);
+    });
+  }
+});
 
   // ---------------- Keycloak Init ----------------
 console.log("Keycloak typeof:", typeof Keycloak);
