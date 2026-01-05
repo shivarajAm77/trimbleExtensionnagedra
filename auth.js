@@ -24,7 +24,13 @@ function toAuthCheckUrl(url) {
     ? url.replace("/authorization.html", "/authcheck.html")
     : url;
 }
-  
+  window.bm = new BroadcastChannel("kc-message");
+
+bm.onmessage = (e) => {
+  console.log("📩 iframe received:", e.data);
+};
+
+console.log("iframe listening");
 
   // ---------------- Keycloak Init ----------------
 console.log("Keycloak typeof:", typeof Keycloak);
