@@ -64,8 +64,6 @@ const keycloak = new Keycloak({
     onNotAuthenticated();
   }
 })();
-  
-const bc = new BroadcastChannel("kc-auth");
 
 bc.onmessage = async (event) => {
   if (event.data === "login-success") {
