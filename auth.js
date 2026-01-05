@@ -67,7 +67,6 @@ bc.onmessage = async (event) => {
     loginBtn.addEventListener("click", async () => {
       console.log("Login button clicked");
       const redirUrl = await getTrimbleHostUrl();
-      consol.log(redirUrl);
       const loginUrl = window.keycloak.createLoginUrl({
       redirectUri: redirUrl
       });
