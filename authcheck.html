@@ -8,7 +8,10 @@
     clientId: "web"
   });
  
-new BroadcastChannel("kc-message").postMessage("HELLO_IFRAME");
+window.opener?.postMessage(
+  { type: "KC_LOGIN_SUCCESS" },
+  "*"
+);
   // OPTIONAL: expose globally
   window.keycloak = keycloak;
 
