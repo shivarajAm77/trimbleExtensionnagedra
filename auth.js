@@ -98,6 +98,7 @@ bc.onmessage = async (event) => {
       console.log("Login button clicked");
       const redirUrl = await getTrimbleHostUrl();
       const authUrl = await toAuthCheckUrl(redirUrl);
+      console.log("redirect Url ",authUrl);
       const loginUrl = window.keycloak.createLoginUrl({
       redirectUri: authUrl
       });
