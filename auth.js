@@ -27,34 +27,46 @@ function toAuthCheckUrl(url) {
   
 
   // ---------------- Keycloak Init ----------------
-  console.log("Keycloak typeof:", typeof Keycloak);
+console.log("Keycloak typeof:", typeof Keycloak);
+
+if (typeof Keycloak !== "function") {
+  console.error("❌ Keycloak adapter not loaded");
+  throw new Error("Keycloak adapter missing");
+}
+
 const AUTH_CHANNEL = "kc-auth";
 const bc = new BroadcastChannel(AUTH_CHANNEL);
-  if (typeof Keycloak !== "function") {
-    console.error("❌ Keycloak adapter not loaded");
-    return;
-  }
+
 let keycloakReady = false;
+
 const keycloak = new Keycloak({
   url: "https://securedev.virtuele.us",
   realm: "virtuele-dev",
   clientId: "web"
 });
 
-(async () => {
-  const authenticated = await keycloak.init({
-    onLoad: "check-sso",
-    pkceMethod: "S256",
-    silentCheckSsoRedirectUri:
-      location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
-  });
+// assign to window
+window.keycloak = keycloak;
 
-  keycloakReady = true;
-console.log("ready",keycloakReady);
-  if (authenticated) {
-    onLoginSuccess(keycloak.tokenParsed);
-  } else {
-    onNotAuthenticated();
+(async function initKeycloak() {
+  try {
+    const authenticated = await keycloak.init({
+      onLoad: "check-sso",
+      pkceMethod: "S256",
+      silentCheckSsoRedirectUri:
+        location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
+    });
+
+    keycloakReady = true;
+    console.log("✅ Keycloak ready");
+
+    if (authenticated) {
+      onLoginSuccess(keycloak.tokenParsed);
+    } else {
+      onNotAuthenticated();
+    }
+  } catch (err) {
+    console.error("Keycloak init failed", err);
   }
 })();
 
