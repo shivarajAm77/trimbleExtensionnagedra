@@ -40,17 +40,44 @@ const bc = new BroadcastChannel(AUTH_CHANNEL);
     realm: "virtuele-dev",
     clientId: "web"
   });
+let keycloakReady = false;
+
+const keycloak = new Keycloak({
+  url: "https://securedev.virtuele.us",
+  realm: "virtuele-dev",
+  clientId: "web"
+});
+
+(async () => {
+  const authenticated = await keycloak.init({
+    onLoad: "check-sso",
+    pkceMethod: "S256",
+    silentCheckSsoRedirectUri:
+      location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
+  });
+
+  keycloakReady = true;
+
+  if (authenticated) {
+    onLoginSuccess(keycloak.tokenParsed);
+  } else {
+    onNotAuthenticated();
+  }
+})();
+  
+const bc = new BroadcastChannel("kc-auth");
 
 bc.onmessage = async (event) => {
   if (event.data === "login-success") {
-    console.log("✅ Login broadcast received in iframe");
+    console.log("📢 Login broadcast received");
 
-    const authenticated = await keycloak.init({
-      onLoad: "check-sso",
-      pkceMethod: "S256",
-      silentCheckSsoRedirectUri:
-        location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
-    });
+    if (!keycloakReady) {
+      console.warn("Keycloak not ready yet");
+      return;
+    }
+
+    // 🔑 IMPORTANT: re-check session, not init again
+    const authenticated = await keycloak.updateToken(0);
 
     if (authenticated) {
       onLoginSuccess(keycloak.tokenParsed);
