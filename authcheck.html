@@ -19,12 +19,14 @@
         location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
     });
 
-    if (authenticated) {
-      bc.postMessage("login-success");
-    }
+     if (authenticated) {
+      bc.postMessage({ type: "LOGIN_SUCCESS" });
 
-    if (window.self === window.top) {
-      window.close();
+      // 🚨 REQUIRED delay
+      setTimeout(() => {
+        bc.close();
+        window.close();
+      }, 300);
     }
   })();
 </script>
