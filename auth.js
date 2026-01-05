@@ -34,14 +34,7 @@ const bc = new BroadcastChannel(AUTH_CHANNEL);
     console.error("❌ Keycloak adapter not loaded");
     return;
   }
-
-  window.keycloak = new Keycloak({
-    url: "https://securedev.virtuele.us",
-    realm: "virtuele-dev",
-    clientId: "web"
-  });
 let keycloakReady = false;
-
 const keycloak = new Keycloak({
   url: "https://securedev.virtuele.us",
   realm: "virtuele-dev",
@@ -57,7 +50,7 @@ const keycloak = new Keycloak({
   });
 
   keycloakReady = true;
-
+console.log("ready");
   if (authenticated) {
     onLoginSuccess(keycloak.tokenParsed);
   } else {
