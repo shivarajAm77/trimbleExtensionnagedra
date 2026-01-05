@@ -19,12 +19,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     return window.location.href;
   }
  
-
+function toAuthCheckUrl(url) {
+  return url.includes("/authentication.html")
+    ? url.replace("/authentication.html", "/authcheck.html")
+    : url;
+}
   
 
   // ---------------- Keycloak Init ----------------
   console.log("Keycloak typeof:", typeof Keycloak);
-
+const AUTH_CHANNEL = "kc-auth";
+const bc = new BroadcastChannel(AUTH_CHANNEL);
   if (typeof Keycloak !== "function") {
     console.error("❌ Keycloak adapter not loaded");
     return;
@@ -36,28 +41,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     clientId: "web"
   });
 
-  await window.keycloak.init({
-    onLoad: "check-sso",
-    pkceMethod: "S256",
-    silentCheckSsoRedirectUri:
-      window.location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
-  }).then(authenticated => {
-     if (!authenticated) {
-    onNotAuthenticated();
-    return;
-  }
-    onLoginSuccess(window.keycloak.tokenParsed);
-    document.getElementById("logoutBtn").style.display = "inline-block";
-    
- if (window.self === window.top) {
-      console.log("Closing standalone tab");
-      window.close();
-    }
-bc.postMessage("login-success");
+bc.onmessage = async (event) => {
+  if (event.data === "login-success") {
+    console.log("✅ Login broadcast received in iframe");
 
-// Optional: close popup
-if (window.close) window.close();
-  }).catch(err => console.error("Keycloak init error:", err));
+    const authenticated = await keycloak.init({
+      onLoad: "check-sso",
+      pkceMethod: "S256",
+      silentCheckSsoRedirectUri:
+        location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
+    });
+
+    if (authenticated) {
+      onLoginSuccess(keycloak.tokenParsed);
+    }
+  }
+};
+
+
 
   // ---------------- Login Button ----------------
   const loginBtn = document.getElementById("loginBtn");
@@ -66,11 +67,8 @@ if (window.close) window.close();
     loginBtn.addEventListener("click", async () => {
       console.log("Login button clicked");
 
-      const trimbleUrl = await getTrimbleHostUrl();
-      console.log("✅ Trimble host URL:", trimbleUrl);
-
       const loginUrl = window.keycloak.createLoginUrl({
-      redirectUri: trimbleUrl
+      redirectUri: toAuthCheckUrl(await getTrimbleHostUrl());
       });
     
       window.open(loginUrl, "_blank", "noopener,noreferrer");
