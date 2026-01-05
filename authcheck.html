@@ -7,7 +7,8 @@
     realm: "virtuele-dev",
     clientId: "web"
   });
-
+ 
+new BroadcastChannel("kc-message").postMessage("HELLO_IFRAME");
   // OPTIONAL: expose globally
   window.keycloak = keycloak;
 
