@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
  
 function toAuthCheckUrl(url) {
-  return url.includes("/authentication.html")
-    ? url.replace("/authentication.html", "/authcheck.html")
+  return url.includes("/authorization.html")
+    ? url.replace("/authorization.html", "/authcheck.html")
     : url;
 }
   
