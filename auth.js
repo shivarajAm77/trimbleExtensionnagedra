@@ -50,7 +50,7 @@ const keycloak = new Keycloak({
   });
 
   keycloakReady = true;
-console.log("ready");
+console.log("ready",keycloakReady);
   if (authenticated) {
     onLoginSuccess(keycloak.tokenParsed);
   } else {
