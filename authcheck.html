@@ -22,9 +22,9 @@
 
       if (authenticated) {
         // Notify iframe / opener
-        window.opener?.postMessage(
-          { type: "KC_LOGIN_SUCCESS" },
-          "*"
+       window.opener.postMessage(
+      { type: "KC_LOGIN_SUCCESS" },
+      window.location.origin
         );
         console.log("KC_LOGIN_SUCCESS message sent");
       }
