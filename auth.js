@@ -167,4 +167,3 @@ function startAuthPolling() {
       });
   }, 2000);
 }
-
