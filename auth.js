@@ -133,16 +133,19 @@ function startAuthPolling() {
   if (authPoller) return;
 
   authPoller = setInterval(() => {
-    keycloak.init({
-      onLoad: "check-sso",
-      silentCheckSsoRedirectUri:
-        location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
-    }).then(authenticated => {
-      if (authenticated) {
-        clearInterval(authPoller);
-        authPoller = null;
-        onLoginSuccess(keycloak.tokenParsed);
-      }
-    }).catch(() => {});
-  }, 2000); // every 2 seconds
+    // This checks if session now exists
+    keycloak.updateToken(0)
+      .then(() => {
+        if (!isAuthenticated && keycloak.authenticated) {
+          isAuthenticated = true;
+          clearInterval(authPoller);
+          authPoller = null;
+          onLoginSuccess(keycloak.tokenParsed);
+        }
+      })
+      .catch(() => {
+        // still not logged in → ignore
+      });
+  }, 2000);
 }
+
