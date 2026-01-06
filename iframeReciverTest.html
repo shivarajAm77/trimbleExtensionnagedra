@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Receiver Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .message-container {
+            background: white;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .message-type {
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        .message-data {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        .status {
+            padding: 10px;
+            background: #2196F3;
+            color: white;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .log-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="status" id="status">Waiting for messages...</div>
+    <h2>Received Messages:</h2>
+    <div class="log-container" id="messageLog"></div>
+
+    <script>
+        // Counter for received messages
+        let messageCount = 0;
+
+        // Function to display received messages
+        function displayMessage(data, origin) {
+            messageCount++;
+            const messageLog = document.getElementById('messageLog');
+            const statusDiv = document.getElementById('status');
+            
+            // Update status
+            statusDiv.textContent = `Total Messages Received: ${messageCount}`;
+            statusDiv.style.background = '#4CAF50';
+            
+            // Create message element
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message-container';
+            messageDiv.innerHTML = `
+                <div class="message-type">Message #${messageCount} - Type: ${data.type || 'Unknown'}</div>
+                <div><strong>Origin:</strong> ${origin}</div>
+                <div><strong>Timestamp:</strong> ${data.timestamp || new Date().toISOString()}</div>
+                <div><strong>Message:</strong> ${data.message || 'No message'}</div>
+                <div><strong>Authenticated:</strong> ${data.authenticated ? 'Yes' : 'No'}</div>
+                <div class="message-data">
+                    <strong>Full Data:</strong>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+            
+            // Add to top of log
+            messageLog.insertBefore(messageDiv, messageLog.firstChild);
+        }
+
+        // Listen for postMessage events
+        window.addEventListener('message', function(event) {
+            // Log the raw event for debugging
+            console.log('Received postMessage event:', event);
+            console.log('Event origin:', event.origin);
+            console.log('Event data:', event.data);
+            
+            // IMPORTANT: In production, you should verify the origin for security
+            // Uncomment and modify this check based on your needs:
+            /*
+            const allowedOrigins = [
+                'http://localhost:3000',
+                'http://localhost:5173',
+                'https://your-domain.com'
+            ];
+            
+            if (!allowedOrigins.includes(event.origin)) {
+                console.warn('Message from unauthorized origin:', event.origin);
+                return;
+            }
+            */
+            
+            // Display the message
+            displayMessage(event.data, event.origin);
+            
+            // Optional: Send a response back to the parent window
+            if (event.source) {
+                event.source.postMessage({
+                    type: 'MESSAGE_RECEIVED',
+                    success: true,
+                    receivedAt: new Date().toISOString(),
+                    originalMessage: event.data
+                }, event.origin);
+            }
+        });
+
+        // Log that the page is ready
+        console.log('Message receiver is ready and listening...');
+        
+        // Optional: Notify parent that iframe is ready
+        if (window.parent !== window) {
+            window.parent.postMessage({
+                type: 'IFRAME_READY',
+                timestamp: new Date().toISOString()
+            }, '*');
+        }
+    </script>
+</body>
+</html>
