@@ -73,29 +73,13 @@ window.keycloak = keycloak;
       onLoginSuccess(keycloak.tokenParsed);
     } else {
       onNotAuthenticated();
+      startAuthPolling();
     }
   } catch (err) {
     console.error("Keycloak init failed", err);
   }
 })();
 
-bc.onmessage = async (event) => {
-  if (event.data === "login-success") {
-    console.log("📢 Login broadcast received");
-
-    if (!keycloakReady) {
-      console.warn("Keycloak not ready yet");
-      return;
-    }
-
-    // 🔑 IMPORTANT: re-check session, not init again
-    const authenticated = await keycloak.updateToken(0);
-
-    if (authenticated) {
-      onLoginSuccess(keycloak.tokenParsed);
-    }
-  }
-};
 
 
 
@@ -143,4 +127,22 @@ function logout() {
         redirectUri: window.location.origin
     });
 }
+let authPoller = null;
 
+function startAuthPolling() {
+  if (authPoller) return;
+
+  authPoller = setInterval(() => {
+    keycloak.init({
+      onLoad: "check-sso",
+      silentCheckSsoRedirectUri:
+        location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
+    }).then(authenticated => {
+      if (authenticated) {
+        clearInterval(authPoller);
+        authPoller = null;
+        onLoginSuccess(keycloak.tokenParsed);
+      }
+    }).catch(() => {});
+  }, 2000); // every 2 seconds
+}
