@@ -84,40 +84,45 @@ window.keycloak = keycloak;
 
 
   // ---------------- Login Button ----------------
-  const loginBtn = document.getElementById("loginBtn");
- const loginWindow;
-  if (loginBtn) {
-    loginBtn.addEventListener("click", async () => {
-      console.log("Login button clicked");
-      const redirUrl = window.location.href;
-      const authUrl = toAuthCheckUrl(redirUrl);
-      console.log("redirect Url ",authUrl);
-      const loginUrl = window.keycloak.createLoginUrl({
+
+const loginBtn = document.getElementById("loginBtn");
+
+if (loginBtn) {
+  loginBtn.addEventListener("click", () => {
+    console.log("Login button clicked");
+
+    const redirUrl = window.location.href;
+    const authUrl = toAuthCheckUrl(redirUrl);
+
+    const loginUrl = window.keycloak.createLoginUrl({
       redirectUri: authUrl
-      });
-    
-      loginWindow = window.open(loginUrl, "_blank", "noopener,noreferrer");
     });
 
-     if (!loginWindow) {
+    const loginWindow = window.open(
+      loginUrl,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+    if (!loginWindow) {
       console.warn("Popup blocked");
       return;
     }
 
     // ✅ Detect popup close
-    const timer = setInterval(async () => {
+    const timer = setInterval(() => {
       if (loginWindow.closed) {
         clearInterval(timer);
         console.log("✅ Login popup closed");
+
+        // 🔁 Reload iframe OR re-check SSO
         window.location.reload();
       }
-    })
-  } else {
-    console.error("loginBtn not found in DOM");
-  }
-
-});
-
+    }, 500); // check every 500ms
+  });
+} else {
+  console.error("loginBtn not found in DOM");
+}
 // Called ONLY when authenticated === true
 function onLoginSuccess(tokenParsed) {
   document.getElementById("loginBtn").hidden = true;
