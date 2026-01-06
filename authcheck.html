@@ -11,29 +11,19 @@
   // Optional: expose globally
   window.keycloak = keycloak;
 
-  (async () => {
-    try {
-      const authenticated = await keycloak.init({
-        onLoad: "check-sso",
-        pkceMethod: "S256",
-        silentCheckSsoRedirectUri:
-          location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
-      });
+(async () => {
+    const authenticated = await keycloak.init({
+      onLoad: "check-sso",
+      pkceMethod: "S256"
+    });
 
-      if (authenticated) {
-        // Notify iframe / opener
-       window.opener.postMessage(
-      { type: "KC_LOGIN_SUCCESS" },
-      window.location.origin
-        );
-        console.log("KC_LOGIN_SUCCESS message sent");
-      }
-
-      // Close redirect tab safely
-     
-
-    } catch (err) {
-      console.error("Keycloak init failed", err);
+    if (authenticated && window.opener) {
+      window.opener.postMessage(
+        { type: "KC_LOGIN_SUCCESS" },
+        location.origin
+      );
     }
+
+    
   })();
 </script>
