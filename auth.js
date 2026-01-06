@@ -166,4 +166,5 @@ function startAuthPolling() {
         // still not logged in → ignore
       });
   }, 2000);
+  };
 });
