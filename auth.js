@@ -165,4 +165,5 @@ function startAuthPolling() {
       .catch(() => {
         // still not logged in → ignore
       });
-  }, 2000);}
+  }, 2000);
+});
