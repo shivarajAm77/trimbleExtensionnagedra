@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Receiver with localStorage Sync</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .tab-indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .controls {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .controls button {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .controls button:hover {
+            background: #ff3838;
+        }
+        .message-container {
+            background: white;
+            border-left: 4px solid #4CAF50;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .message-container.from-storage {
+            border-left-color: #2196F3;
+        }
+        .message-type {
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        .message-container.from-storage .message-type {
+            color: #2196F3;
+        }
+        .message-data {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .message-info {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .message-info strong {
+            color: #555;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-badge.authenticated {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-badge.not-authenticated {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .source-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            background: #e3f2fd;
+            color: #1565c0;
+            margin-left: 10px;
+        }
+        .status {
+            padding: 15px;
+            background: #2196F3;
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status.active {
+            background: #4CAF50;
+        }
+        .log-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔔 Message Receiver</h1>
+        <div class="tab-indicator" id="tabIndicator">Tab ID: Loading...</div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-value" id="totalCount">0</div>
+            <div class="stat-label">Total Messages</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="postMessageCount">0</div>
+            <div class="stat-label">Via postMessage</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="storageCount">0</div>
+            <div class="stat-label">Via localStorage</div>
+        </div>
+    </div>
+
+    <div class="status" id="status">
+        <span>Waiting for messages...</span>
+    </div>
+
+    <div class="controls">
+        <button onclick="clearAllMessages()">🗑️ Clear All Messages</button>
+        <button onclick="clearLocalStorage()">💾 Clear localStorage</button>
+    </div>
+
+    <h2>Received Messages:</h2>
+    <div class="log-container" id="messageLog">
+        <div class="empty-state">No messages received yet. Messages will appear here from both postMessage and other tabs via localStorage.</div>
+    </div>
+
+    <script>
+        // Generate unique tab ID
+        const TAB_ID = 'tab_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const STORAGE_KEY = 'auth_messages';
+        
+        // Counters
+        let totalMessageCount = 0;
+        let postMessageCount = 0;
+        let storageEventCount = 0;
+
+        // Update tab indicator
+        document.getElementById('tabIndicator').textContent = `Tab ID: ${TAB_ID.substr(0, 20)}...`;
+
+        // Function to update stats
+        function updateStats() {
+            document.getElementById('totalCount').textContent = totalMessageCount;
+            document.getElementById('postMessageCount').textContent = postMessageCount;
+            document.getElementById('storageCount').textContent = storageEventCount;
+        }
+
+        // Function to save message to localStorage
+        function saveToLocalStorage(messageData) {
+            try {
+                // Get existing messages
+                const existingMessages = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                
+                // Add new message with tab info
+                const messageWithMeta = {
+                    ...messageData,
+                    receivedAt: new Date().toISOString(),
+                    receivedByTab: TAB_ID,
+                    storageTimestamp: Date.now()
+                };
+                
+                // Keep only last 100 messages to avoid filling localStorage
+                existingMessages.unshift(messageWithMeta);
+                if (existingMessages.length > 100) {
+                    existingMessages.pop();
+                }
+                
+                // Save back to localStorage
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(existingMessages));
+                
+                console.log('Saved to localStorage:', messageWithMeta);
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+            }
+        }
+
+        // Function to display received messages
+        function displayMessage(data, source = 'postMessage', origin = 'Unknown') {
+            totalMessageCount++;
+            
+            if (source === 'postMessage') {
+                postMessageCount++;
+            } else {
+                storageEventCount++;
+            }
+            
+            updateStats();
+            
+            const messageLog = document.getElementById('messageLog');
+            const statusDiv = document.getElementById('status');
+            
+            // Remove empty state
+            const emptyState = messageLog.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+            
+            // Update status
+            statusDiv.innerHTML = `
+                <span>✅ Message received from ${source}</span>
+                <span>Last update: ${new Date().toLocaleTimeString()}</span>
+            `;
+            statusDiv.className = 'status active';
+            
+            // Create message element
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message-container ${source === 'localStorage' ? 'from-storage' : ''}`;
+            
+            const sourceBadge = source === 'localStorage' 
+                ? '<span class="source-badge">📡 From Other Tab</span>'
+                : '<span class="source-badge">📨 Direct Message</span>';
+            
+            const authBadge = data.authenticated 
+                ? '<span class="status-badge authenticated">✓ Authenticated</span>'
+                : '<span class="status-badge not-authenticated">✗ Not Authenticated</span>';
+            
+            messageDiv.innerHTML = `
+                <div class="message-type">
+                    ${data.type || 'Unknown Type'} 
+                    ${sourceBadge}
+                </div>
+                <div class="message-info">
+                    <strong>Message:</strong>
+                    <span>${data.message || '(empty)'}</span>
+                    
+                    <strong>Origin:</strong>
+                    <span>${origin}</span>
+                    
+                    <strong>Timestamp:</strong>
+                    <span>${data.timestamp || new Date().toISOString()}</span>
+                    
+                    <strong>Status:</strong>
+                    <span>${authBadge}</span>
+                </div>
+                <div class="message-data">
+                    <strong>Full Data:</strong>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+            
+            // Add to top of log
+            messageLog.insertBefore(messageDiv, messageLog.firstChild);
+        }
+
+        // Function to load existing messages from localStorage on page load
+        function loadExistingMessages() {
+            try {
+                const existingMessages = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                console.log('Loading existing messages:', existingMessages.length);
+                
+                // Display in reverse order (oldest first)
+                existingMessages.reverse().forEach((msg, index) => {
+                    displayMessage(msg, 'localStorage (history)', msg.origin || 'Stored');
+                });
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+
+        // Listen for postMessage events
+        window.addEventListener('message', function(event) {
+            console.log('Received postMessage event:', event);
+            console.log('Event origin:', event.origin);
+            console.log('Event data:', event.data);
+            
+            // Display the message
+            displayMessage(event.data, 'postMessage', event.origin);
+            
+            // Save to localStorage so other tabs can see it
+            saveToLocalStorage({
+                ...event.data,
+                origin: event.origin,
+                source: 'postMessage'
+            });
+            
+            // Optional: Send acknowledgment back to parent
+            if (event.source && event.source !== window) {
+                try {
+                    event.source.postMessage({
+                        type: 'MESSAGE_RECEIVED',
+                        success: true,
+                        receivedAt: new Date().toISOString(),
+                        originalMessage: event.data,
+                        tabId: TAB_ID
+                    }, event.origin);
+                } catch (e) {
+                    console.log('Could not send response:', e);
+                }
+            }
+        });
+
+        // Listen for localStorage changes from other tabs
+        window.addEventListener('storage', function(event) {
+            console.log('localStorage event:', event);
+            
+            // Only respond to changes in our storage key
+            if (event.key === STORAGE_KEY && event.newValue) {
+                try {
+                    const messages = JSON.parse(event.newValue);
+                    
+                    // Get the latest message (first in array)
+                    if (messages.length > 0) {
+                        const latestMessage = messages[0];
+                        
+                        // Only display if it wasn't received by this tab
+                        if (latestMessage.receivedByTab !== TAB_ID) {
+                            console.log('New message from another tab:', latestMessage);
+                            displayMessage(latestMessage, 'localStorage', latestMessage.origin || 'Other Tab');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error parsing storage event:', error);
+                }
+            }
+        });
+
+        // Function to clear all messages
+        function clearAllMessages() {
+            const messageLog = document.getElementById('messageLog');
+            messageLog.innerHTML = '<div class="empty-state">No messages received yet. Messages will appear here from both postMessage and other tabs via localStorage.</div>';
+            totalMessageCount = 0;
+            postMessageCount = 0;
+            storageEventCount = 0;
+            updateStats();
+            document.getElementById('status').innerHTML = '<span>Messages cleared</span>';
+            document.getElementById('status').className = 'status';
+        }
+
+        // Function to clear localStorage
+        function clearLocalStorage() {
+            localStorage.removeItem(STORAGE_KEY);
+            alert('localStorage cleared! Messages in other tabs will no longer sync.');
+        }
+
+        // Load existing messages on page load
+        loadExistingMessages();
+
+        // Log that the page is ready
+        console.log('Message receiver is ready and listening...');
+        console.log('Tab ID:', TAB_ID);
+        
+        // Notify parent that iframe is ready
+        if (window.parent !== window) {
+            window.parent.postMessage({
+                type: 'IFRAME_READY',
+                timestamp: new Date().toISOString(),
+                tabId: TAB_ID
+            }, '*');
+        }
+    </script>
+</body>
+</html>
