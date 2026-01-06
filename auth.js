@@ -25,6 +25,7 @@ function toAuthCheckUrl(url) {
     : url;
 }
 window.addEventListener("message", (event) => {
+  console.log("📩 Raw message event:", event);
   if (event.data?.type === "KC_LOGIN_SUCCESS") {
     console.log("✅ Login received via postMessage");
 
