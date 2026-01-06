@@ -111,6 +111,7 @@ window.keycloak = keycloak;
         console.log("✅ Login popup closed");
         window.location.reload();
       }
+    }
   } else {
     console.error("loginBtn not found in DOM");
   }
