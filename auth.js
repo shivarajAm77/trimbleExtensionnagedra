@@ -155,10 +155,12 @@ function startAuthPolling() {
     // This checks if session now exists
     keycloak.updateToken(0)
       .then(() => {
+        consol.log("updateTokeniscalled");
         if (!isAuthenticated && keycloak.authenticated) {
           isAuthenticated = true;
           clearInterval(authPoller);
           authPoller = null;
+          consol.log("updateTokenisauthenticated");
           onLoginSuccess(keycloak.tokenParsed);
         }
       })
