@@ -1,27 +1,42 @@
- <script src="https://cdn.jsdelivr.net/npm/keycloak-js@25.0.6/dist/keycloak.min.js"></script>
-<script>
-  const bc = new BroadcastChannel("kc-auth");
+<script src="https://cdn.jsdelivr.net/npm/keycloak-js@25.0.6/dist/keycloak.min.js"></script>
 
+<script>
+  // Create Keycloak instance
   const keycloak = new Keycloak({
     url: "https://securedev.virtuele.us",
     realm: "virtuele-dev",
     clientId: "web"
   });
- 
-window.opener?.postMessage(
-  { type: "KC_LOGIN_SUCCESS" },
-  "*"
-);
-  // OPTIONAL: expose globally
+
+  // Optional: expose globally
   window.keycloak = keycloak;
 
   (async () => {
-    const authenticated = await keycloak.init({
-      onLoad: "check-sso",
-      pkceMethod: "S256",
-      silentCheckSsoRedirectUri:
-        location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
-    });
+    try {
+      const authenticated = await keycloak.init({
+        onLoad: "check-sso",
+        pkceMethod: "S256",
+        silentCheckSsoRedirectUri:
+          location.origin + "/trimbleExtensionnagedra/silent-check-sso.html"
+      });
 
-    setTimeout(() => window.close(), 300);
+      if (authenticated) {
+        // Notify iframe / opener
+        window.opener?.postMessage(
+          { type: "KC_LOGIN_SUCCESS" },
+          "*"
+        );
+      }
+
+      // Close redirect tab safely
+      setTimeout(() => {
+        if (window.self === window.top) {
+          window.close();
+        }
+      }, 300);
+
+    } catch (err) {
+      console.error("Keycloak init failed", err);
+    }
+  })();
 </script>
