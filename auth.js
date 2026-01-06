@@ -85,7 +85,7 @@ window.keycloak = keycloak;
 
   // ---------------- Login Button ----------------
   const loginBtn = document.getElementById("loginBtn");
-
+ const loginWindow;
   if (loginBtn) {
     loginBtn.addEventListener("click", async () => {
       console.log("Login button clicked");
@@ -96,7 +96,7 @@ window.keycloak = keycloak;
       redirectUri: authUrl
       });
     
-      const loginWindow = window.open(loginUrl, "_blank", "noopener,noreferrer");
+      loginWindow = window.open(loginUrl, "_blank", "noopener,noreferrer");
     });
 
      if (!loginWindow) {
