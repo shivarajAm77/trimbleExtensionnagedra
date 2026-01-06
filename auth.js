@@ -96,8 +96,21 @@ window.keycloak = keycloak;
       redirectUri: authUrl
       });
     
-      window.open(loginUrl, "_blank", "noopener,noreferrer");
+      const loginWindow = window.open(loginUrl, "_blank", "noopener,noreferrer");
     });
+
+     if (!loginWindow) {
+      console.warn("Popup blocked");
+      return;
+    }
+
+    // ✅ Detect popup close
+    const timer = setInterval(async () => {
+      if (loginWindow.closed) {
+        clearInterval(timer);
+        console.log("✅ Login popup closed");
+        window.location.reload();
+      }
   } else {
     console.error("loginBtn not found in DOM");
   }
