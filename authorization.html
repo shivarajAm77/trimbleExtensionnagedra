@@ -8,21 +8,26 @@
     <script src="https://cdn.jsdelivr.net/npm/keycloak-js@25.0.6/dist/keycloak.min.js"></script>
 </head>
 <body>
-  <div class="left-actions">
-    <button id="loginBtn">Login</button>
-  </div>
+<div class="min-h-screen flex items-center justify-center bg-gray-50">
+      <div class="card">
+        <h1>Welcome</h1>
 
-  <div class="right-actions">
-    <button id="reloadBtn">🔄 Reload</button>
+        <div class="button-group">
+          <button class="btn btn-primary">
+            Login
+          </button>
 
-    <div id="userActions" hidden>
-      <span class="user-info">
-        ✅ <span id="username"></span>
-      </span>
-      <button id="logoutBtn" class="danger">🚪 Logout</button>
+          <button class="btn btn-secondary">
+            Reload
+          </button>
+
+             <div id="userActions" hidden>
+                   <button id="logoutBtn" class="danger">🚪 Logout</button>
+                 </div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+
   <div id="authStatus"></div>
      <script src="auth-redirect.js"></script>
  <script src="auth.js"></script>
