@@ -1,16 +1,48 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
   let workSpaceAPI;
-  // ---------------- Trimble Init ----------------
-  async function initTrimble() {
-    workSpaceAPI = await TrimbleConnectWorkspace.connect(
-      window.parent,
-      () => {},
-      3000
-    );
-    console.log("Trimble API connected", workSpaceAPI);
-  }
+// Debug listener
+(function () {
+  window.addEventListener("message", function (e) {
+    if (e?.data?.type?.startsWith("extension.")) {
+      console.log("🧪 Raw message:", e.data);
+    }
+  });
+})();
 
+// Trimble connect
+async function initTrimble() {
+  workSpaceAPI = await TrimbleConnectWorkspace.connect(
+    window.parent,
+    (event, arg) => {
+      console.log("✅ connect() event:", event, arg.data);
+    },
+    3000
+  );
+}
+
+(function () {
+  console.log("🧪 Trimble message debugger attached");
+
+  window.addEventListener("message", function (e) {
+    // Safety: ignore empty or non-object messages
+    if (!e || !e.data || typeof e.data !== "object") return;
+
+    // Trimble extension messages always start with "extension."
+    if (typeof e.data.type === "string" && e.data.type.startsWith("extension.")) {
+      console.group("📩 Trimble Raw Message");
+      console.log("Type:", e.data.type);
+      console.log("Payload:", e.data);
+      console.log("Origin:", e.origin);
+      console.log("Source:", e.source === window.parent ? "parent" : "other");
+      console.groupEnd();
+    }
+  });
+})();
+
+  console.log("🧪 Raw message:", e.data);
+console.log("✅ connect() event:", event);
+  
   await initTrimble();
 
   async function getTrimbleHostUrl() {
