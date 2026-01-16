@@ -17,7 +17,7 @@
             Login
           </button>
 
-          <button class="btn btn-secondary">
+          <button id="reloadBtn" class="btn btn-secondary">
             Reload
           </button>
 
@@ -35,9 +35,15 @@
      <script src="auth-redirect.js"></script>
  <script src="auth.js"></script>
       <script>
-      document.getElementById("reloadBtn").addEventListener("click", () => {
-        window.location.reload();
-      });
+     const reloadBtn = document.getElementById("reloadBtn");
+
+  if (reloadBtn) {
+    reloadBtn.addEventListener("click", () => {
+      window.location.reload();
+    });
+  } else {
+    console.warn("reloadBtn not found in DOM");
+  }
     </script>
 </body>
 </html>
