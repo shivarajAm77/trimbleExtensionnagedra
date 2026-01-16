@@ -62,7 +62,6 @@ window.keycloak = keycloak;
       onLoginSuccess(keycloak.tokenParsed);
     } else {
       onNotAuthenticated();
-      startAuthPolling();
     }
   } catch (err) {
     console.error("Keycloak init failed", err);
@@ -110,6 +109,8 @@ function onLoginSuccess(tokenParsed) {
 function onNotAuthenticated() {
   document.getElementById("loginBtn").hidden = false;
   document.getElementById("userActions").hidden = true;
+
+  startSse();
 }
 function logout() {
     if (!window.keycloak) {
@@ -120,9 +121,25 @@ function logout() {
         redirectUri: window.location.origin
     });
 }
-const source = new EventSource("https://super-probable-oriole.ngrok-free.app/kafka-sse/stream");
+let sseSource = null;
 
-  source.onmessage = (e) => {
-    document.getElementById("out").textContent += e.data + "\n";
+function startSse() {
+  if (sseSource) return; // prevent duplicate connections
+
+  console.log("📡 Starting SSE connection");
+
+  sseSource = new EventSource(
+    "https://super-probable-oriole.ngrok-free.app/kafka-sse/stream"
+  );
+
+  sseSource.onmessage = (e) => {
+    const out = document.getElementById("out");
+    if (out) {
+      out.textContent += e.data + "\n";
+    }
   };
-});
+
+  sseSource.onerror = (err) => {
+    console.error("❌ SSE error", err);
+  };
+}
