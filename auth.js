@@ -178,27 +178,8 @@ function logout() {
         redirectUri: window.location.origin
     });
 }
-let authPoller = null;
+const source = new EventSource("https://super-probable-oriole.ngrok-free.app/kafka-sse/stream");
 
-function startAuthPolling() {
-  if (authPoller) return;
-
-  authPoller = setInterval(() => {
-    // This checks if session now exists
-    keycloak.updateToken(0)
-      .then(() => {
-        consol.log("updateTokeniscalled");
-        if (!isAuthenticated && keycloak.authenticated) {
-          isAuthenticated = true;
-          clearInterval(authPoller);
-          authPoller = null;
-          consol.log("updateTokenisauthenticated");
-          onLoginSuccess(keycloak.tokenParsed);
-        }
-      })
-      .catch(() => {
-        // still not logged in → ignore
-      });
-  }, 2000);
-  };
-});
+source.onmessage = (e) => {
+  document.getElementById("out").textContent += e.data + "\n";
+};
