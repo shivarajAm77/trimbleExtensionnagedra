@@ -26,9 +26,9 @@
   })();
 
   function send() {
-     fetch("https://localhost:8094/send", {
+     fetch("https://super-probable-oriole.ngrok-free.app/kafka-sse/send", {
           method: "POST",
-          headers: { "Content-Type": "text/plain" },
+          headers: { "Content-Type": "text/plain","ngrok-skip-browser-warning": "true" },
           body: "Hello from Page A"
         });
 </script>
