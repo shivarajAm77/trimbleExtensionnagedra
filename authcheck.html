@@ -18,12 +18,17 @@
     });
 
     if (authenticated && window.opener) {
-      window.opener.postMessage(
-        { type: "KC_LOGIN_SUCCESS" },
-        location.origin
-      );
+       send();
+      }
     }
 
     
   })();
+
+  function send() {
+     fetch("https://localhost:8094/send", {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: "Hello from Page A"
+        });
 </script>
