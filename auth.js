@@ -1,8 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-
   let workSpaceAPI;
-
-
 // Trimble connect
 async function initTrimble() {
   workSpaceAPI = await TrimbleConnectWorkspace.connect(
@@ -14,10 +11,7 @@ async function initTrimble() {
   );
 }
 
-
-  
   await initTrimble();
-
   async function getTrimbleHostUrl() {
     if (!workSpaceAPI) return null;
     console.log("Document",document);
@@ -29,7 +23,6 @@ function toAuthCheckUrl(url) {
     ? url.replace("/authorization.html", "/authcheck.html")
     : url;
 }
-
 
   // ---------------- Keycloak Init ----------------
 console.log("Keycloak typeof:", typeof Keycloak);
@@ -144,6 +137,7 @@ function logout() {
 }
 const source = new EventSource("https://super-probable-oriole.ngrok-free.app/kafka-sse/stream");
 
-source.onmessage = (e) => {
-  document.getElementById("out").textContent += e.data + "\n";
-};
+  source.onmessage = (e) => {
+    document.getElementById("out").textContent += e.data + "\n";
+  };
+});
