@@ -141,7 +141,7 @@ function startSse() {
 
   sseSource.onerror = (err) => {
     console.error("❌ SSE error", err);
-     console.log("readyState:", es.readyState);
+     console.log("readyState:", sseSource.readyState);
   };
 }
 
