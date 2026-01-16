@@ -1,14 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
   let workSpaceAPI;
-// Debug listener
-(function () {
-  window.addEventListener("message", function (e) {
-    if (e?.data?.type?.startsWith("extension.")) {
-      console.log("🧪 Raw message:", e.data);
-    }
-  });
-})();
+
 
 // Trimble connect
 async function initTrimble() {
@@ -21,27 +14,7 @@ async function initTrimble() {
   );
 }
 
-(function () {
-  console.log("🧪 Trimble message debugger attached");
 
-  window.addEventListener("message", function (e) {
-    // Safety: ignore empty or non-object messages
-    if (!e || !e.data || typeof e.data !== "object") return;
-
-    // Trimble extension messages always start with "extension."
-    if (typeof e.data.type === "string" && e.data.type.startsWith("extension.")) {
-      console.group("📩 Trimble Raw Message");
-      console.log("Type:", e.data.type);
-      console.log("Payload:", e.data);
-      console.log("Origin:", e.origin);
-      console.log("Source:", e.source === window.parent ? "parent" : "other");
-      console.groupEnd();
-    }
-  });
-})();
-
-  console.log("🧪 Raw message:", e.data);
-console.log("✅ connect() event:", event);
   
   await initTrimble();
 
@@ -56,16 +29,7 @@ function toAuthCheckUrl(url) {
     ? url.replace("/authorization.html", "/authcheck.html")
     : url;
 }
-window.addEventListener("message", (event) => {
-  console.log("📩 Raw message event:", event);
-  if (event.data?.type === "KC_LOGIN_SUCCESS") {
-    console.log("✅ Login received via postMessage");
 
-    keycloak.init({ onLoad: "check-sso" }).then(auth => {
-      if (auth) onLoginSuccess(keycloak.tokenParsed);
-    });
-  }
-});
 
   // ---------------- Keycloak Init ----------------
 console.log("Keycloak typeof:", typeof Keycloak);
