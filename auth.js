@@ -87,27 +87,12 @@ if (loginBtn) {
       redirectUri: authUrl
     });
 
-    const loginWindow = window.open(
+     window.open(
       loginUrl,
       "_blank",
       "noopener,noreferrer"
     );
 
-    if (!loginWindow) {
-      console.warn("Popup blocked");
-      return;
-    }
-
-    // ✅ Detect popup close
-    const timer = setInterval(() => {
-      if (loginWindow.closed) {
-        clearInterval(timer);
-        console.log("✅ Login popup closed");
-
-        // 🔁 Reload iframe OR re-check SSO
-        window.location.reload();
-      }
-    }, 500); // check every 500ms
   });
 } else {
   console.error("loginBtn not found in DOM");
