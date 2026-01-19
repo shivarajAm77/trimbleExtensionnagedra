@@ -105,6 +105,19 @@ function onLoginSuccess(tokenParsed) {
     tokenParsed.preferred_username;
 }
 
+  const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+     keycloak.logout({
+      redirectUri: "https://shivarajam77.github.io/trimbleExtensionnagedra/authorization.html"
+    });
+  }
+ });
+  
+    
+  
+
 // Optional: when not authenticated
 function onNotAuthenticated() {
   document.getElementById("loginBtn").hidden = false;
