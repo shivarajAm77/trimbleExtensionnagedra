@@ -1,53 +1,33 @@
 <script src="https://cdn.jsdelivr.net/npm/keycloak-js@25.0.6/dist/keycloak.min.js"></script>
 
 <script>
-  // Create Keycloak instance
-  const keycloak = new Keycloak({
-    url: "https://securedev.virtuele.us",
-    realm: "virtuele-dev",
-    clientId: "web"
-  });
-
-  // Optional: expose globally
-  window.keycloak = keycloak;
+const keycloak = new Keycloak({
+  url: "https://securedev.virtuele.us",
+  realm: "virtuele-dev",
+  clientId: "web"
+});
 
 (async () => {
+  try {
     const authenticated = await keycloak.init({
-      onLoad: "check-sso",
+      onLoad: "login-required", // IMPORTANT
       pkceMethod: "S256"
     });
 
-    if (authenticated && window.opener) {
-       send();
-      }
-    
+    if (authenticated) {
+      console.log("✅ Login successful");
 
-    
-  })();
+      const bc = new BroadcastChannel("auth-channel");
 
-   function send() {
-    fetch("https://super-probable-oriole.ngrok-free.app/kafka-sse/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain",
-        "ngrok-skip-browser-warning": "true"
-      },
-      body: "Hello from Page A"
-    });
+      bc.postMessage({
+        type: "AUTH_SUCCESS",
+        token: keycloak.token
+      });
+
+      window.close();
+    }
+  } catch (e) {
+    console.error("❌ Keycloak error:", e);
   }
-
-const bc = new BroadcastChannel("auth-channel");
-
-bc.postMessage({
-  type: "AUTH_SUCCESS",
-  token: keycloak.token
-});
-
-window.close();
-
-  window.addEventListener("storage", (event) => {
-  if (event.key === "auth-token") {
-    console.log("Token received:", event.newValue);
-  }
-});
+})();
 </script>
