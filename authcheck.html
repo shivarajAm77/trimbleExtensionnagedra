@@ -35,4 +35,13 @@
       body: "Hello from Page A"
     });
   }
+
+const bc = new BroadcastChannel("auth-channel");
+
+bc.postMessage({
+  type: "AUTH_SUCCESS",
+  token: keycloak.token
+});
+
+window.close();
 </script>
