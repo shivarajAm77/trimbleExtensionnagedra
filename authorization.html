@@ -1,107 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Virtuele site Extension</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://components.connect.trimble.com/trimble-connect-workspace-api/index.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/keycloak-js@25.0.6/dist/keycloak.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Virtuele Extension</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://components.connect.trimble.com/trimble-connect-workspace-api/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/keycloak-js@25.0.6/dist/keycloak.min.js"></script>
 </head>
+
 <body>
+
 <div class="min-h-screen flex items-center justify-center bg-gray-50">
-      <div class="card">
-        <h1>Welcome</h1>
+  <div class="card">
+    <h1>Welcome</h1>
 
-        <div   class="button-group">
-          <button id="loginBtn" class="btn btn-primary">
-            Login
-          </button>
+    <div class="button-group">
+      <button id="loginBtn" class="btn btn-primary">
+        Login
+      </button>
 
-          <button id="reloadBtn" class="btn btn-secondary">
-            Reload
-          </button>
+      <button id="reloadBtn" class="btn btn-secondary">
+        Reload
+      </button>
 
-             <div id="userActions" hidden>
-                   <button id="logoutBtn" class="btn-logout">🚪 Logout</button>
-                 </div>
-        </div>
+      <div id="userActions" hidden>
+        <button id="logoutBtn" class="btn-logout">🚪 Logout</button>
       </div>
     </div>
-<div> 
-    <h3>Listening via SSE</h3>
-    <pre id="out"></pre>
+  </div>
 </div>
-  <div id="authStatus"></div>
-     <script src="auth-redirect.js"></script>
- <script src="auth.js"></script>
-     <script>
-console.log("🚀 authorization.html loaded");
 
-// ---------------- BroadcastChannel ----------------
-const bc = new BroadcastChannel("auth-channel");
+<div id="authStatus"></div>
 
-bc.onmessage = (e) => {
-  console.log("📡 RECEIVED IN IFRAME:", e.data);
-};
+<script>
+  // Reload button
+  const reloadBtn = document.getElementById("reloadBtn");
 
-bc.onmessage = (event) => {
-  console.log("📡 BroadcastChannel message received:", event.data);
-
-  if (event.data.type === "AUTH_SUCCESS") {
-    console.log("✅ BC AUTH_SUCCESS");
-
-    const token = event.data.token;
-
-    if (!token) {
-      console.warn("⚠️ Token is empty via BroadcastChannel");
-      return;
-    }
-
-    sessionStorage.setItem("token", token);
-    console.log("💾 Token stored via BroadcastChannel");
-
-    try {
-      const parsed = JSON.parse(atob(token.split('.')[1]));
-      console.log("👤 Parsed user:", parsed);
-
-      if (typeof onLoginSuccess === "function") {
-        onLoginSuccess(parsed);
-      } else {
-        console.warn("⚠️ onLoginSuccess not defined");
-      }
-    } catch (e) {
-      console.error("❌ Token parse error:", e);
-    }
+  if (reloadBtn) {
+    reloadBtn.addEventListener("click", () => {
+      window.location.reload();
+    });
   }
-};
-
-// ---------------- localStorage listener ----------------
-window.addEventListener("storage", (event) => {
-  console.log("📦 Storage event:", event);
-
-  if (event.key === "auth-token") {
-    console.log("✅ localStorage AUTH event");
-
-    const token = event.newValue;
-
-    if (!token) {
-      console.warn("⚠️ Token is empty via localStorage");
-      return;
-    }
-
-    sessionStorage.setItem("token", token);
-    console.log("💾 Token stored via localStorage");
-  }
-});
-
-// ---------------- Debug helper ----------------
-function debugToken() {
-  const token = sessionStorage.getItem("token");
-  console.log("🔍 Current stored token:", token);
-}
-
 </script>
+
+<script src="auth.js"></script>
+
 </body>
 </html>
-
-
