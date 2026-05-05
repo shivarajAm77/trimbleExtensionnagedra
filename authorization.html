@@ -44,6 +44,20 @@
   } else {
     console.warn("reloadBtn not found in DOM");
   }
+const bc = new BroadcastChannel("auth-channel");
+
+bc.onmessage = (event) => {
+  if (event.data.type === "AUTH_SUCCESS") {
+    console.log("✅ Received token:", event.data.token);
+
+    // store token
+    sessionStorage.setItem("token", event.data.token);
+
+    // update UI
+    const parsed = JSON.parse(atob(event.data.token.split('.')[1]));
+    onLoginSuccess(parsed);
+  }
+};
     </script>
 </body>
 </html>
