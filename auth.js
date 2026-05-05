@@ -33,29 +33,45 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await initAuth();
 
-  // ---------------- Login ----------------
+  // ---------------- Login (FIXED) ----------------
   const loginBtn = document.getElementById("loginBtn");
 
   if (loginBtn) {
     loginBtn.addEventListener("click", () => {
-      console.log("🔐 Redirecting to login...");
+      console.log("🔐 Redirecting login via TOP window");
 
-      keycloak.login({
-        redirectUri: window.location.href
+      // 🔥 Capture full Trimble URL (important)
+      const returnUrl = window.location.href;
+
+      // Optional: store for debugging
+      sessionStorage.setItem("returnUrl", returnUrl);
+
+      // 🔥 Create login URL manually
+      const loginUrl = keycloak.createLoginUrl({
+        redirectUri: returnUrl
       });
+
+      console.log("➡️ Login URL:", loginUrl);
+
+      // 🔥 Break out of iframe
+      window.top.location.href = loginUrl;
     });
   }
 
-  // ---------------- Logout ----------------
+  // ---------------- Logout (FIXED) ----------------
   const logoutBtn = document.getElementById("logoutBtn");
 
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-      console.log("🚪 Logging out...");
+      console.log("🚪 Logging out via TOP window");
 
-      keycloak.logout({
-        redirectUri: window.location.href
+      const returnUrl = window.location.href;
+
+      const logoutUrl = keycloak.createLogoutUrl({
+        redirectUri: returnUrl
       });
+
+      window.top.location.href = logoutUrl;
     });
   }
 
