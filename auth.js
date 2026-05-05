@@ -134,11 +134,11 @@ function onLoginSuccess(tokenParsed) {
 
 if (logoutBtn) {
   logoutBtn.addEventListener("click", () => {
-     keycloak.logout({
+    keycloak.logout({
       redirectUri: "https://shivarajam77.github.io/trimbleExtensionnagedra/authorization.html"
     });
-  }
- )};
+  });
+}
   
     
   
