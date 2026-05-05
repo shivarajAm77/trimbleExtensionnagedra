@@ -25,10 +25,14 @@
     
   })();
 
-  function send() {
-     fetch("https://super-probable-oriole.ngrok-free.app/kafka-sse/send", {
-          method: "POST",
-          headers: { "Content-Type": "text/plain","ngrok-skip-browser-warning": "true" },
-          body: "Hello from Page A"
-        });
+   function send() {
+    fetch("https://super-probable-oriole.ngrok-free.app/kafka-sse/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain",
+        "ngrok-skip-browser-warning": "true"
+      },
+      body: "Hello from Page A"
+    });
+  }
 </script>
