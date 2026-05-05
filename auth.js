@@ -68,7 +68,32 @@ window.keycloak = keycloak;
   }
 })();
 
+const AUTH_CHANNEL = "auth-channel"; // must match popup
+const bc = new BroadcastChannel(AUTH_CHANNEL);
 
+bc.onmessage = (event) => {
+  console.log("📡 Message from popup:", event.data);
+
+  if (event.data.type === "AUTH_SUCCESS") {
+    const token = event.data.token;
+
+    if (!token) {
+      console.warn("⚠️ Empty token");
+      return;
+    }
+
+    console.log("✅ Login received in iframe");
+
+    // store token
+    sessionStorage.setItem("token", token);
+
+    // parse token
+    const parsed = JSON.parse(atob(token.split('.')[1]));
+
+    // update UI
+    onLoginSuccess(parsed);
+  }
+};
 
 
   // ---------------- Login Button ----------------
