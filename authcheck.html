@@ -1,33 +1,24 @@
-<script src="https://cdn.jsdelivr.net/npm/keycloak-js@25.0.6/dist/keycloak.min.js"></script>
-
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auth Check</title>
+  <script src="https://cdn.jsdelivr.net/npm/keycloak-js@25.0.6/dist/keycloak.min.js"></script>
+</head>
+<body>
 <script>
-const keycloak = new Keycloak({
-  url: "https://securedev.virtuele.us",
-  realm: "virtuele-dev",
-  clientId: "web"
-});
+  const keycloak = new Keycloak({
+    url: "https://securedev.virtuele.us",
+    realm: "virtuele-dev",
+    clientId: "web"
+  });
 
-(async () => {
-  try {
-    const authenticated = await keycloak.init({
-      onLoad: "login-required", // IMPORTANT
-      pkceMethod: "S256"
-    });
-
-    if (authenticated) {
-      console.log("✅ Login successful");
-
-      const bc = new BroadcastChannel("auth-channel");
-
-      bc.postMessage({
-        type: "AUTH_SUCCESS",
-        token: keycloak.token
-      });
-
-      window.close();
-    }
-  } catch (e) {
-    console.error("❌ Keycloak error:", e);
-  }
-})();
+  keycloak.init({
+    onLoad: "check-sso",
+    pkceMethod: "S256"
+  }).then(() => {
+    // Always go back to main page
+    window.location.href = "/trimbleExtensionnagedra/authorization.html";
+  });
 </script>
+</body>
+</html>
