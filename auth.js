@@ -67,16 +67,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
 
-  function startLoginPolling() {
-  const interval = setInterval(() => {
-    if (!keycloak.authenticated) {
-      console.log("🔄 Poll detected possible login → reload");
-
-      clearInterval(interval);
-      window.location.reload();
-    }
-  }, 2000);
-}
   // ---------------- UI ----------------
   function onLoginSuccess(tokenParsed) {
     console.log("🎉 User authenticated:", tokenParsed);
@@ -129,6 +119,18 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
+  let pollInterval = null;
+  function startLoginPolling() {
+  const interval = setInterval(() => {
+    if (!keycloak.authenticated) {
+      console.log("🔄 Poll detected possible login → reload");
+
+      clearInterval(interval);
+      window.location.reload();
+    }
+  }, 2000);
+}
+  
 // fallback
 window.addEventListener("focus", () => {
   checkAuthOnReturn("focus");
