@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       window.open(loginUrl, "_blank"); // ✅ REQUIRED
+      startLoginPolling();
     });
   }
 
@@ -65,6 +66,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+
+  function startLoginPolling() {
+  const interval = setInterval(() => {
+    if (!keycloak.authenticated) {
+      console.log("🔄 Poll detected possible login → reload");
+
+      clearInterval(interval);
+      window.location.reload();
+    }
+  }, 2000);
+}
   // ---------------- UI ----------------
   function onLoginSuccess(tokenParsed) {
     console.log("🎉 User authenticated:", tokenParsed);
@@ -88,23 +100,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (userActions) userActions.hidden = true;
   }
 
-  // ---------------- Detect login when user returns ----------------
-  window.addEventListener("focus", async () => {
-    console.log("🔄 Tab focused → checking auth");
+ // ---------------- Detect login when user returns ----------------
+async function checkAuthOnReturn(trigger) {
+  console.log(`🔄 Checking auth via: ${trigger}`);
 
-    try {
-      const authenticated = await keycloak.init({
-        onLoad: "check-sso"
-      });
+  try {
+    if (keycloak.authenticated) {
+      console.log("✅ Already authenticated → refreshing token");
 
-      console.log("🔍 Auth status after focus:", authenticated);
+      await keycloak.updateToken(0); // refresh if needed
 
-      if (authenticated) {
-        onLoginSuccess(keycloak.tokenParsed);
-      }
-    } catch (e) {
-      console.warn("Recheck failed", e);
+      return; // 🚫 DO NOT reload
     }
-  });
+
+    console.log("⚠️ Not authenticated → reload to re-init");
+
+    window.location.reload(); // ✅ will trigger initAuth again
+
+  } catch (e) {
+    console.warn("Auth check failed", e);
+  }
+}
+
+// 🔥 Most reliable
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    checkAuthOnReturn("visibilitychange");
+  }
+});
+
+// fallback
+window.addEventListener("focus", () => {
+  checkAuthOnReturn("focus");
+});
 
 });
