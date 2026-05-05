@@ -44,4 +44,10 @@ bc.postMessage({
 });
 
 window.close();
+
+  window.addEventListener("storage", (event) => {
+  if (event.key === "auth-token") {
+    console.log("Token received:", event.newValue);
+  }
+});
 </script>
