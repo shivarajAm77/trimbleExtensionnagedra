@@ -113,7 +113,7 @@ if (logoutBtn) {
       redirectUri: "https://shivarajam77.github.io/trimbleExtensionnagedra/authorization.html"
     });
   }
- });
+ )};
   
     
   
