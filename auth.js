@@ -43,6 +43,19 @@ const keycloak = new Keycloak({
   clientId: "web"
 });
 
+  const storedToken = sessionStorage.getItem("token");
+
+if (storedToken) {
+  try {
+    console.log("🔁 Restoring session from storage");
+
+    const parsed = JSON.parse(atob(storedToken.split('.')[1]));
+    onLoginSuccess(parsed);
+  } catch (e) {
+    console.error("❌ Failed to restore token:", e);
+  }
+}
+  
 // assign to window
 window.keycloak = keycloak;
 
@@ -68,8 +81,6 @@ window.keycloak = keycloak;
   }
 })();
 
-const AUTH_CHANNEL = "auth-channel"; // must match popup
-const bc = new BroadcastChannel(AUTH_CHANNEL);
 
 bc.onmessage = (event) => {
   console.log("📡 Message from popup:", event.data);
@@ -146,6 +157,7 @@ function onLoginSuccess(tokenParsed) {
 
 if (logoutBtn) {
   logoutBtn.addEventListener("click", () => {
+     bc.postMessage({ type: "LOGOUT" }); // 🔥 add this
     keycloak.logout({
       redirectUri: "https://shivarajam77.github.io/trimbleExtensionnagedra/authorization.html"
     });
@@ -165,8 +177,5 @@ function logout() {
         redirectUri: window.location.origin
     });
 }
-let sseSource = null;
-
-
 
 });
