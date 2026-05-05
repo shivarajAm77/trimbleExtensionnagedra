@@ -32,7 +32,7 @@ if (typeof Keycloak !== "function") {
   throw new Error("Keycloak adapter missing");
 }
 
-const AUTH_CHANNEL = "kc-auth";
+const AUTH_CHANNEL = "auth-channel";
 const bc = new BroadcastChannel(AUTH_CHANNEL);
 
 let keycloakReady = false;
@@ -123,11 +123,23 @@ if (loginBtn) {
 }
 // Called ONLY when authenticated === true
 function onLoginSuccess(tokenParsed) {
-  document.getElementById("loginBtn").hidden = true;
-  document.getElementById("userActions").hidden = false;
+  console.log("🎉 Updating UI after login");
 
-  document.getElementById("username").innerText =
-    tokenParsed.preferred_username;
+  const loginBtn = document.getElementById("loginBtn");
+  const userActions = document.getElementById("userActions");
+
+  if (loginBtn) loginBtn.hidden = true;
+  if (userActions) userActions.hidden = false;
+
+  // Optional username display
+  const usernameEl = document.getElementById("username");
+  if (usernameEl) {
+    usernameEl.innerText = tokenParsed.preferred_username;
+  }
+
+  // Ensure reload button visible
+  const reloadBtn = document.getElementById("reloadBtn");
+  if (reloadBtn) reloadBtn.hidden = false;
 }
 
   const logoutBtn = document.getElementById("logoutBtn");
@@ -139,16 +151,10 @@ if (logoutBtn) {
     });
   });
 }
-  
-    
-  
-
 // Optional: when not authenticated
 function onNotAuthenticated() {
   document.getElementById("loginBtn").hidden = false;
   document.getElementById("userActions").hidden = true;
-
-  startSse();
 }
 function logout() {
     if (!window.keycloak) {
@@ -161,26 +167,6 @@ function logout() {
 }
 let sseSource = null;
 
-function startSse() {
-  if (sseSource) return; // prevent duplicate connections
 
-  console.log("📡 Starting SSE connection");
-
-  sseSource = new EventSource(
-    "https://super-probable-oriole.ngrok-free.app/kafka-sse/stream"
-  );
-
-  sseSource.onmessage = (e) => {
-    const out = document.getElementById("out");
-    if (out) {
-      out.textContent += e.data + "\n";
-    }
-  };
-
-  sseSource.onerror = (err) => {
-    console.error("❌ SSE error", err);
-     console.log("readyState:", sseSource.readyState);
-  };
-}
 
 });
