@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   window.keycloak = keycloak;
 
+  let initialized = false;
+
   // ---------------- Init ----------------
   async function initAuth() {
     try {
@@ -18,6 +20,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         onLoad: "check-sso",
         pkceMethod: "S256"
       });
+
+      initialized = true;
 
       console.log("✅ Keycloak initialized:", authenticated);
 
@@ -33,64 +37,45 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await initAuth();
 
-  // ---------------- Login (FIXED) ----------------
+  // ---------------- Login ----------------
   const loginBtn = document.getElementById("loginBtn");
 
   if (loginBtn) {
     loginBtn.addEventListener("click", () => {
-      console.log("🔐 Redirecting login via TOP window");
+      console.log("🔐 Opening login in new tab");
 
-      // 🔥 Capture full Trimble URL (important)
-      const returnUrl = window.location.href;
-
-      // Optional: store for debugging
-      sessionStorage.setItem("returnUrl", returnUrl);
-
-      // 🔥 Create login URL manually
       const loginUrl = keycloak.createLoginUrl({
-        redirectUri: returnUrl
+        redirectUri: window.location.href
       });
 
-      console.log("➡️ Login URL:", loginUrl);
-
-      // 🔥 Break out of iframe
-      window.top.location.href = loginUrl;
+      window.open(loginUrl, "_blank"); // ✅ REQUIRED
     });
   }
 
-  // ---------------- Logout (FIXED) ----------------
+  // ---------------- Logout ----------------
   const logoutBtn = document.getElementById("logoutBtn");
 
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-      console.log("🚪 Logging out via TOP window");
+      console.log("🚪 Logging out");
 
-      const returnUrl = window.location.href;
-
-      const logoutUrl = keycloak.createLogoutUrl({
-        redirectUri: returnUrl
+      keycloak.logout({
+        redirectUri: window.location.href
       });
-
-      window.top.location.href = logoutUrl;
     });
   }
 
-  // ---------------- UI Handlers ----------------
+  // ---------------- UI ----------------
   function onLoginSuccess(tokenParsed) {
     console.log("🎉 User authenticated:", tokenParsed);
 
     const loginBtn = document.getElementById("loginBtn");
     const userActions = document.getElementById("userActions");
-    const usernameEl = document.getElementById("username");
     const reloadBtn = document.getElementById("reloadBtn");
 
     if (loginBtn) loginBtn.hidden = true;
     if (userActions) userActions.hidden = false;
     if (reloadBtn) reloadBtn.hidden = false;
-
-    if (usernameEl) {
-      usernameEl.innerText = tokenParsed.preferred_username;
-    }
   }
 
   function onNotAuthenticated() {
@@ -103,14 +88,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (userActions) userActions.hidden = true;
   }
 
-  // ---------------- Auto check on tab focus ----------------
+  // ---------------- Detect login when user returns ----------------
   window.addEventListener("focus", async () => {
-    console.log("🔄 Tab focused → rechecking auth");
+    console.log("🔄 Tab focused → checking auth");
 
     try {
       const authenticated = await keycloak.init({
         onLoad: "check-sso"
       });
+
+      console.log("🔍 Auth status after focus:", authenticated);
 
       if (authenticated) {
         onLoginSuccess(keycloak.tokenParsed);
