@@ -40,6 +40,10 @@ console.log("🚀 authorization.html loaded");
 // ---------------- BroadcastChannel ----------------
 const bc = new BroadcastChannel("auth-channel");
 
+bc.onmessage = (e) => {
+  console.log("📡 RECEIVED IN IFRAME:", e.data);
+};
+
 bc.onmessage = (event) => {
   console.log("📡 BroadcastChannel message received:", event.data);
 
