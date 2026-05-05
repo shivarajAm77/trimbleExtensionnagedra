@@ -58,6 +58,7 @@ bc.onmessage = (event) => {
     onLoginSuccess(parsed);
   }
 };
+ localStorage.setItem("auth-token", keycloak.token);
     </script>
 </body>
 </html>
