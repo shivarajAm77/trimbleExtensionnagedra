@@ -78,6 +78,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (loginBtn) loginBtn.hidden = true;
     if (userActions) userActions.hidden = false;
     if (reloadBtn) reloadBtn.hidden = false;
+
+    if (window.self === window.top) { console.log("Closing standalone tab"); window.close();}
   }
 
   function onNotAuthenticated() {
