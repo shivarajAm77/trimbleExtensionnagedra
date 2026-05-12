@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
     onLoginSuccess(window.keycloak.tokenParsed);
     document.getElementById("logoutBtn").style.display = "inline-block";
-    
+    console.log("standaloneor not" , window.self === window.top);
  if (window.self === window.top) {
       console.log("Closing standalone tab");
       window.close();
