@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Company - Virtuele</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body>
+  <div class="flex h-screen w-screen overflow-hidden bg-white">
+    <!-- Left Panel - Image -->
+    <div class="hidden md:flex md:w-1/2 lg:w-3/5 relative">
+      <img src="https://via.placeholder.com/1200x800/2583fd/ffffff?text=City+Skyline" 
+           alt="City skyline" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-[#2583fd]/20"></div>
+    </div>
+
+    <!-- Right Panel - Form -->
+    <div class="w-full md:w-1/2 lg:w-2/5 bg-gradient-to-br from-white via-gray-50 to-gray-200 
+                flex flex-col items-center justify-start px-8 md:px-12 lg:px-20 py-8 pt-16 
+                overflow-y-auto shadow-[0_10px_60px_-15px_rgba(0,0,0,0.5)] relative z-10">
+      
+      <div class="w-full max-w-md">
+        <!-- Logo -->
+        <div class="mb-8">
+          <div class="flex items-center justify-center gap-2 mb-8">
+            <svg class="w-12 h-12" viewBox="0 0 48 48" fill="none">
+              <rect width="48" height="48" rx="8" fill="#2583FD"/>
+              <text x="24" y="32" text-anchor="middle" fill="white" font-size="20" font-weight="bold">V</text>
+            </svg>
+          </div>
+          <h1 class="text-gray-900 text-center text-2xl font-semibold">Select Your Company</h1>
+          <p class="text-sm text-gray-500 mt-2 text-center">Choose a company to continue to your dashboard</p>
+        </div>
+
+        <!-- Primary Companies -->
+        <div class="space-y-4 w-full">
+          <div>
+            <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3 px-1">Primary</h3>
+            <button id="btn-primary-1" type="button" onclick="selectCompany('primary-1')"
+                    class="w-full rounded-xl border-2 p-6 transition-all hover:scale-[1.02] group text-left
+                           bg-gradient-to-br from-blue-50 to-blue-100 border-[#2583FD] 
+                           shadow-[0_12px_40px_rgb(37,131,253,0.25)] ring-4 ring-[#2583FD]/20">
+              <div class="flex items-start gap-4">
+                <div class="w-14 h-14 bg-white rounded-lg flex items-center justify-center flex-shrink-0 
+                            shadow-lg transition-transform p-2 border border-gray-100">
+                  <svg class="w-7 h-7 text-[#2583FD]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="font-medium text-gray-900 mb-1 group-hover:text-[#2583FD] transition-colors truncate">
+                    Virtuele US
+                  </h3>
+                  <p class="text-xs text-gray-500">Status: ACTIVE</p>
+                </div>
+                <svg class="w-6 h-6 text-[#2583FD]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            </button>
+          </div>
+
+          <!-- Associated Companies -->
+          <div class="pt-2">
+            <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3 px-1">Associated</h3>
+            <div class="space-y-3">
+              <button id="btn-associated-1" type="button" onclick="selectCompany('associated-1')"
+                      class="w-full rounded-lg p-4 border transition-all group text-left
+                             bg-white border-gray-200 hover:border-[#2583FD] hover:shadow-md">
+                <div class="flex items-start gap-3">
+                  <div class="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 
+                              transition-colors p-2 border border-gray-200 group-hover:border-blue-200 bg-white">
+                    <svg class="w-5 h-5 transition-colors text-gray-500 group-hover:text-[#2583FD]" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-sm font-medium mb-0.5 transition-colors truncate text-gray-900 group-hover:text-[#2583FD]">
+                      Partner Company A
+                    </h3>
+                    <p class="text-xs text-gray-500">Status: ACTIVE</p>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Proceed Button -->
+          <button id="btn-proceed" type="button" disabled
+                  class="w-full bg-[#2583FD] text-white py-3 rounded-lg hover:bg-[#1a6fd8] 
+                         transition-all shadow-md hover:shadow-lg text-sm font-medium 
+                         hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed">
+            Proceed
+          </button>
+
+          <!-- Logout -->
+          <div class="text-center pt-2">
+            <button type="button" class="text-sm text-gray-600 hover:text-[#2583FD] font-medium 
+                                          transition-colors inline-flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedCompanyId = null;
+
+    function selectCompany(id) {
+      selectedCompanyId = id;
+      
+      // Reset all buttons
+      document.querySelectorAll('button[id^="btn-"]').forEach(btn => {
+        if (btn.id !== 'btn-proceed' && !btn.id.includes('logout')) {
+          const isPrimary = btn.id.includes('primary');
+          const isSelected = btn.id === id;
+          
+          if (isPrimary) {
+            btn.className = `w-full rounded-xl border-2 p-6 transition-all hover:scale-[1.02] group text-left ${
+              isSelected 
+                ? 'bg-gradient-to-br from-blue-50 to-blue-100 border-[#2583FD] shadow-[0_12px_40px_rgb(37,131,253,0.25)] ring-4 ring-[#2583FD]/20'
+                : 'bg-gradient-to-br from-white to-blue-50 border-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:border-[#2583FD]'
+            }`;
+          } else {
+            btn.className = `w-full rounded-lg p-4 border transition-all group text-left ${
+              isSelected
+                ? 'bg-blue-50 border-[#2583FD] shadow-md ring-2 ring-[#2583FD]/20'
+                : 'bg-white border-gray-200 hover:border-[#2583FD] hover:shadow-md'
+            }`;
+          }
+
+          // Update icon color
+          const icon = btn.querySelector('svg');
+          if (icon && !isPrimary) {
+            icon.className = `w-5 h-5 transition-colors ${
+              isSelected ? 'text-[#2583FD]' : 'text-gray-500 group-hover:text-[#2583FD]'
+            }`;
+          }
+
+          // Add/remove checkmark
+          const existingCheck = btn.querySelector('.checkmark');
+          if (isSelected && !existingCheck) {
+            const checkmark = document.createElement('div');
+            checkmark.className = 'checkmark';
+            checkmark.innerHTML = `<svg class="w-6 h-6 text-[#2583FD]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>`;
+            btn.querySelector('.flex-1')?.after(checkmark);
+          } else if (!isSelected && existingCheck) {
+            existingCheck.remove();
+          }
+        }
+      });
+
+      // Enable proceed button
+      document.getElementById('btn-proceed').disabled = false;
+    }
+
+    document.getElementById('btn-proceed').addEventListener('click', () => {
+      if (selectedCompanyId) {
+        alert(`Proceeding with company: ${selectedCompanyId}`);
+      }
+    });
+  </script>
+</body>
+</html>
