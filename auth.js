@@ -50,8 +50,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("logoutBtn").style.display = "inline-block";
     console.log("standaloneor not" , window.self === window.top);
  if (window.self === window.top) {
-      console.log("Closing standalone tab");
-      window.close();
+    window.location.href =
+      "https://shivarajam77.github.io/trimbleExtensionnagedra/select-company.html";
+
+  return;
     }
 bc.postMessage("login-success");
 
